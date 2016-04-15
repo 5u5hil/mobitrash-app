@@ -56,16 +56,24 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('getClicked', {
+  .state('markAttendance2.getClicked', {
     url: '/click',
-    templateUrl: 'templates/getClicked.html',
-    controller: 'getClickedCtrl'
+    views: {
+      'tab1': {
+        templateUrl: 'templates/getClicked.html',
+        controller: 'getClickedCtrl'
+      }
+    }
   })
 
-  .state('pickupDetails', {
+  .state('markAttendance2.pickupDetails', {
     url: '/details',
-    templateUrl: 'templates/pickupDetails.html',
-    controller: 'pickupDetailsCtrl'
+    views: {
+      'tab2': {
+        templateUrl: 'templates/pickupDetails.html',
+        controller: 'pickupDetailsCtrl'
+      }
+    }
   })
 
 $urlRouterProvider.otherwise('/attendance/attendance')
