@@ -2,22 +2,6 @@
     <ion-content padding="true" class="has-header">
         <form class="list">
             <label class="item item-select">
-                <span class="input-label">Receipt Type</span>
-                <select>
-                    <option>Please Select</option>
-                    <option>MH 101001</option>
-                    <option>Equipment 20202</option>
-                </select>
-            </label>
-            <label class="item item-select">
-                <span class="input-label">Fuel Type</span>
-                <select>
-                    <option>Please Select</option>
-                    <option>MH 101001</option>
-                    <option>Equipment 20202</option>
-                </select>
-            </label>
-            <label class="item item-select">
                 <span class="input-label">Asset</span>
                 <select>
                     <option>Please Select</option>
@@ -25,7 +9,25 @@
                     <option>Equipment 20202</option>
                 </select>
             </label>
-            <label class="item item-input" name="qty">
+            <label class="item item-select">
+                <span class="input-label">Receipt Type</span>
+                <select ng-model="type" ng-init="type = 'Please Select'" >
+                    <option>Please Select</option>
+                    <option value="1">Fuel</option>
+                    <option value="2">Maintenance</option>
+                </select>
+            </label>
+            <label class="item item-select" ng-if="type == 1">
+                <span class="input-label">Fuel Type</span>
+                <select>
+                    <option value="0">Please Select</option>
+                    <option value="1">Diesel</option>
+                    <option value="2">Petrol</option>
+                    <option value="3">CNG</option>
+                </select>
+            </label>
+
+            <label class="item item-input" name="qty"  ng-if="type == 1">
                 <span class="input-label">Fuel Qty</span>
                 <input type="number" placeholder="Qty in Ltrs">
             </label>
@@ -33,7 +35,11 @@
                 <span class="input-label">Price</span>
                 <input type="number" placeholder="Price">
             </label>
-            <button id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline">Submit</button>
+            <label class="item item-input" name="attachments">
+                <span class="input-label">Attachment</span>
+                <input type="file" name="file">
+            </label>
+            <button id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline"> Submit</button>
         </form>
     </ion-content>
 </ion-view>
