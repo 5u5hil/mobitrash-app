@@ -68,7 +68,7 @@ angular.module('app.routes', [])
                     })
 
                     .state('markAttendance2.pickupDetails', {
-                        url: '/details',
+                        url: '/details/:pickupid',
                         views: {
                             'tab2': {
                                 templateUrl: 'templates/pickupDetails.html',

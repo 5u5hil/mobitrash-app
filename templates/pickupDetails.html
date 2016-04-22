@@ -1,33 +1,25 @@
 <ion-view title="Pickup Details" id="page9">
     <ion-content padding="true" class="has-header">
         <button id="pickupDetails-button15" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-energized  button-block button-outline icon ion-android-alarm-clock">Start Timer</button>
-        <form class="list">
-            <label class="item item-input" name="wt1">
-                <span class="input-label">Waste Type 1</span>
-                <input type="number" placeholder="Qty in Kg">
-            </label>
-            <label class="item item-input" name="wt1">
-                <span class="input-label">Waste Type 2</span>
-                <input type="number" placeholder="Qty in Kg">
-            </label>
-            <label class="item item-input" name="wt1">
-                <span class="input-label">Waste Type 3</span>
-                <input type="number" placeholder="Qty in Kg">
+        <form name="PickupForm" class="list" ng-submit="savePickup(PickupForm)">
+            <label ng-repeat="wastetype in wastetypes" class="item item-input">
+                <span class="input-label">{{wastetype.name}}</span>
+                <input ng-model="PickupForm.Pickup.wastetype[wastetype.id]" type="number" placeholder="Qty in Kg">
             </label>
             <div class="spacer" style="width: 283px; height: 47px;"></div>
             <label class="item item-input" name="wt1">
                 <span class="input-label">Compost</span>
-                <input type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.compost" type="number" placeholder="Qty in Kg">
             </label>
             <label class="item item-input" name="wt1">
                 <span class="input-label">Sawdust</span>
-                <input type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.sawdust" type="number" placeholder="Qty in Kg">
             </label>
             <label class="item item-input" name="wt1">
                 <span class="input-label">Crates Filled</span>
-                <input type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.crates_filled" type="number" placeholder="Qty in Kg">
             </label>
-            <button id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block icon ion-android-checkbox-outline"> Submit</button>
+            <button type="submit" id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block icon ion-android-checkbox-outline"> Submit</button>
         </form>
     </ion-content>
 </ion-view>

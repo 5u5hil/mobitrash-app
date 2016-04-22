@@ -74,7 +74,48 @@ angular.module('app.controllers', [])
 
         })
 
-        .controller('pickupDetailsCtrl', function ($scope) {
+        .controller('pickupDetailsCtrl', function ($scope, $http, $stateParams, $localstorage, $ionicPopup) {
+            $scope.wastetypes = {};
+            $scope.pickup = {};
+            $http({
+                url: $scope.base + 'pickup-details',
+                method: 'POST',
+                data: {id: $stateParams.pickupid}
+            }).then(function successCallback(response) {
+                if (response.data.flash == 'success') {
+                    $scope.wastetypes = response.data.Wastetype;
+                    $scope.pickup = response.data.Pickup;
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error Occured!',
+                        template: 'Error Occured! Please try again!'
+                    });
+                }
+            }, function errorCallback(response) {
+            });
+
+            $scope.savePickup = function (formdata) {
+                
+                $http({
+                    url: $scope.base + 'save-service-details',
+                    method: 'POST',
+                    data: {service:formdata.Pickup,pickup:$scope.pickup}
+                }).then(function successCallback(response) {
+                    if (response.data.flash == 'success') {
+                         var alertPopup = $ionicPopup.alert({
+                            title: 'Success!',
+                            template: 'Data saved Successfully!'
+                        });
+                    } else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Error Occured!',
+                            template: 'Error Occured! Please try again!'
+                        });
+                    }
+                }, function errorCallback(response) {
+                });
+
+            };
 
         })
 
