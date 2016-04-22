@@ -43,6 +43,7 @@ angular.module('app.routes', [])
                     .state('markAttendance2', {
                         url: '/attendance',
                         templateUrl: 'templates/markAttendance2.html',
+                        controller: 'AppCtrl',
                         abstract: true
                     })
 

@@ -1,14 +1,17 @@
 <ion-view title="Mark Attendance" id="page2">
     <ion-content padding="true" class="has-header">
-        <form class="list">
-            <label class="item item-input" name="empid">
-                <span class="input-label">Input</span>
-                <input type="text" placeholder="Employee Id">
-            </label>
-        </form>
-        <button id="markAttendance-button1" style="border-radius:0px 0px 0px 0px;" class="button button-royal  button-block"> Submit</button>
-        <div id="markAttendance-markdown2" style="color:#000000;">
-            <p>Welcome Gautham Udani!</p>
+        <div ng-if="!isLogin()">
+            <form  name="LoginForm" class="list" ng-submit="login(LoginForm)">
+                <label class="item item-input" name="empid">
+                    <span class="input-label">Input</span>
+                    <input type="text" ng-model="LoginForm.user.id" placeholder="Employee Id">
+                </label>
+                <button id="markAttendance-button1" type="submit" style="border-radius:0px 0px 0px 0px;" class="button button-royal  button-block"> Submit</button>
+            </form>
+        </div>
+
+        <div ng-if="isLogin()" id="markAttendance-markdown2" style="color:#000000;">
+            <p>Welcome {{user.first_name}} {{user.last_name}} !</p>
 
             <p>If this is indeed you then please proceed to mark attendance and if not then kindly re enter your Employee ID .</p>
         </div>

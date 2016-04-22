@@ -1,11 +1,62 @@
 angular.module('app.controllers', [])
 
-        .controller('markAttendanceCtrl', function ($scope) {
+        .controller('AppCtrl', function ($scope, $localstorage) {
+            $scope.base = 'http://mobitrash.cruxservers.in/operator/';
+
+            $scope.isLogin = function () {
+                if ($localstorage.uid()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
 
         })
+        .controller('markAttendanceCtrl', function ($scope, $localstorage, $http, $ionicPopup) {
+            $scope.user = {};
+            if ($localstorage.uid()) {
+                $scope.user = $localstorage.getObject('user');
+            }
+            console.log($scope.user.first_name);
+            $scope.login = function (formdata) {
+                $http({
+                    url: $scope.base + 'login',
+                    method: 'POST',
+                    data: {id: formdata.user.id}
+                }).then(function successCallback(response) {
+                    if (response.data.flash == 'success') {
+                        $localstorage.setObject('user', response.data.User);
 
-        .controller('scheduleForTheDayCtrl', function ($scope) {
+                    } else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Login Error',
+                            template: 'Invalid ID'
+                        });
+                    }
+                }, function errorCallback(response) {
+                });
+            }
+        })
 
+        .controller('scheduleForTheDayCtrl', function ($scope, $localstorage, $http, $ionicPopup) {
+            $scope.schedules = {};
+            if ($localstorage.uid()) {
+                $http({
+                    url: $scope.base + 'schedules',
+                    method: 'POST',
+                    data: {id: $localstorage.uid()}
+                }).then(function successCallback(response) {
+                    if (response.data.flash == 'success') {
+                        $scope.schedules = response.data.Schedules;
+                    } else {
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'Error Occured!',
+                            template: 'Error Occured! Please try again!'
+                        });
+                    }
+                }, function errorCallback(response) {
+                });
+            }
         })
 
         .controller('cleaningCtrl', function ($scope) {
