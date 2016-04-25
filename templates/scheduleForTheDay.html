@@ -2,15 +2,15 @@
     <ion-content padding="true" class="has-header">
         <ion-list></ion-list>
         <span ng-repeat="schedule in schedules">
-            <div class="list card" ng-repeat="pickup in schedule.pickups">
+            <div class="list card" ng-repeat="pickup in schedule.pickups track by $index">
                 <div class="item item-divider">{{pickup.user.first_name + ' ' + pickup.user.last_name}} </div>
                 <div class="item item-body">
                     <div id="scheduleForTheDay-markdown4" style="color:#000000;">
                         <p>{{pickup.address.address}}</p>
                     </div>
                     <div class="button-bar">
-                        <a ui-sref='markAttendance2.route' id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-balanced button-small button-block button-outline icon ion-map"> View Route</a>
-                        <a href="#/attendance/details/{{pickup.id}}" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Details</a>
+                        <a ng-disabled="$index > 0" ui-sref="markAttendance2.route({latitude:pickup.address.latitude,longitude:pickup.address.longitude})" id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-balanced button-small button-block button-outline icon ion-map"> View Route</a>
+                        <a ng-disabled="$index > 0" ui-sref="markAttendance2.pickupDetails({pickupid:pickup.id})" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Details</a>
                     </div>
                 </div>
             </div>

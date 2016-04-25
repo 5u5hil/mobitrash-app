@@ -1,0 +1,9 @@
+.stopWatch {   
+    text-align: center;
+    margin: 10px auto;
+}
+.numbers {
+    font-size: 30px;
+    line-height: 40px;
+    color: black;
+}

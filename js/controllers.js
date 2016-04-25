@@ -74,8 +74,9 @@ angular.module('app.controllers', [])
 
         })
 
-        .controller('pickupDetailsCtrl', function ($scope, $http, $stateParams, $localstorage, $ionicPopup) {
+        .controller('pickupDetailsCtrl', function ($scope, $state, $http, $stateParams, $localstorage, $ionicPopup, StopwatchFactory, $timeout) {
             $scope.wastetypes = {};
+            $scope.stopwatch = {log: 0};
             $scope.pickup = {};
             $http({
                 url: $scope.base + 'pickup-details',
@@ -94,32 +95,46 @@ angular.module('app.controllers', [])
             }, function errorCallback(response) {
             });
 
+            $scope.getTimeFormat = function (millis) {
+                var hours = Math.floor(millis / 36e5),
+                        mins = Math.floor((millis % 36e5) / 6e4),
+                        secs = Math.floor((millis % 6e4) / 1000);
+                return hours+':'+mins+':'+secs;
+            }
+
             $scope.savePickup = function (formdata) {
-                
-                $http({
-                    url: $scope.base + 'save-service-details',
-                    method: 'POST',
-                    data: {service:formdata.Pickup,pickup:$scope.pickup}
-                }).then(function successCallback(response) {
-                    if (response.data.flash == 'success') {
-                         var alertPopup = $ionicPopup.alert({
-                            title: 'Success!',
-                            template: 'Data saved Successfully!'
-                        });
-                    } else {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error Occured!',
-                            template: 'Error Occured! Please try again!'
-                        });
-                    }
-                }, function errorCallback(response) {
-                });
+                $timeout(function () {
+                    $('#stoptimerbutton').trigger('click');
+
+
+                    formdata.Pickup.time_taken = $scope.getTimeFormat($scope.stopwatch.log);
+                    console.log(formdata);
+                    $http({
+                        url: $scope.base + 'save-service-details',
+                        method: 'POST',
+                        data: {service: formdata.Pickup, pickup: $scope.pickup}
+                    }).then(function successCallback(response) {
+                        if (response.data.flash == 'success') {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Success!',
+                                template: 'Data saved Successfully!'
+                            });
+                            $state.go('markAttendance2.scheduleForTheDay');
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Error Occured!',
+                                template: 'Error Occured! Please try again!'
+                            });
+                        }
+                    }, function errorCallback(response) {
+                    });
+                }, 200);
 
             };
 
         })
 
-        .controller('routeCtrl', function ($scope) {
+        .controller('routeCtrl', function ($scope, $stateParams) {
             $scope.$on('$ionicView.afterEnter', function () {
                 var directionsService = new google.maps.DirectionsService;
                 var directionsDisplay = new google.maps.DirectionsRenderer;
@@ -130,11 +145,12 @@ angular.module('app.controllers', [])
 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
-                        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        var destination = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);
                         map.setCenter(initialLocation);
                         directionsService.route({
                             origin: initialLocation,
-                            destination: "Mulund,Mumbai",
+                            destination: destination,
                             travelMode: google.maps.TravelMode.DRIVING
                         }, function (response, status) {
                             if (status === google.maps.DirectionsStatus.OK) {

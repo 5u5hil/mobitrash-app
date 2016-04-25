@@ -78,7 +78,7 @@ angular.module('app.routes', [])
                     })
 
                     .state('markAttendance2.route', {
-                        url: '/route',
+                        url: '/route/:latitude/:longitude',
                         views: {
                             'tab2': {
                                 templateUrl: 'templates/route.html',
