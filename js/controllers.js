@@ -40,6 +40,7 @@ angular.module('app.controllers', [])
 
         .controller('scheduleForTheDayCtrl', function ($scope, $localstorage, $http, $ionicPopup) {
             $scope.schedules = {};
+            $scope.pickupmessage = "";
             if ($localstorage.uid()) {
                 $http({
                     url: $scope.base + 'schedules',
@@ -48,6 +49,17 @@ angular.module('app.controllers', [])
                 }).then(function successCallback(response) {
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
+                        var index = 0;
+                        $.each($scope.schedules, function(key,val){
+                            $.each(val.pickups, function(key1,val1){
+                                if(val1){
+                                    index++;
+                                }                                
+                            });
+                        });
+                        if(index == 0){
+                            $scope.pickupmessage = "No more pickups for today";
+                        }
                     } else {
                         var alertPopup = $ionicPopup.alert({
                             title: 'Error Occured!',
@@ -78,6 +90,7 @@ angular.module('app.controllers', [])
             $scope.wastetypes = {};
             $scope.stopwatch = {log: 0};
             $scope.pickup = {};
+
             $http({
                 url: $scope.base + 'pickup-details',
                 method: 'POST',
@@ -99,7 +112,7 @@ angular.module('app.controllers', [])
                 var hours = Math.floor(millis / 36e5),
                         mins = Math.floor((millis % 36e5) / 6e4),
                         secs = Math.floor((millis % 6e4) / 1000);
-                return hours+':'+mins+':'+secs;
+                return hours + ':' + mins + ':' + secs;
             }
 
             $scope.savePickup = function (formdata) {
