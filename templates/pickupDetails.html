@@ -4,7 +4,7 @@
         <form name="PickupForm" class="list" ng-submit="savePickup(PickupForm)">
             <label ng-repeat="wastetype in wastetypes" class="item item-input">
                 <span class="input-label">{{wastetype.name}}</span>
-                <input ng-model="PickupForm.Pickup.wastetype[wastetype.id]" type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.wastetype[wastetype.id]['quantity']" type="number" placeholder="Qty in Kg">
             </label>
             <div class="spacer" style="width: 283px; height: 47px;"></div>
             <label class="item item-input" name="wt1">
