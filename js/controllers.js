@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-        .controller('AppCtrl', function ($scope, $localstorage) {
+        .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup) {
             $scope.base = 'http://mobitrash.cruxservers.in/operator/';
 
             $scope.isLogin = function () {
@@ -10,6 +10,13 @@ angular.module('app.controllers', [])
                     return false;
                 }
             }
+
+            $scope.alert = function (title, message, type) {
+                var alertPopup = $ionicPopup.alert({
+                    title: title,
+                    template: message
+                });
+            };
 
         })
         .controller('markAttendanceCtrl', function ($scope, $localstorage, $http, $ionicPopup) {
@@ -28,10 +35,8 @@ angular.module('app.controllers', [])
                         $localstorage.setObject('user', response.data.User);
 
                     } else {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Login Error',
-                            template: 'Invalid ID'
-                        });
+                        $scope.alert('Login Error', 'Invalid ID');
+
                     }
                 }, function errorCallback(response) {
                 });
@@ -50,32 +55,98 @@ angular.module('app.controllers', [])
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
                         var index = 0;
-                        $.each($scope.schedules, function(key,val){
-                            $.each(val.pickups, function(key1,val1){
-                                if(val1){
+                        $.each($scope.schedules, function (key, val) {
+                            $.each(val.pickups, function (key1, val1) {
+                                if (val1) {
                                     index++;
-                                }                                
+                                }
                             });
                         });
-                        if(index == 0){
+                        if (index == 0) {
                             $scope.pickupmessage = "No more pickups for today";
                         }
                     } else {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error Occured!',
-                            template: 'Error Occured! Please try again!'
-                        });
+                        $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
                 }, function errorCallback(response) {
                 });
             }
         })
 
-        .controller('cleaningCtrl', function ($scope) {
+        .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http, $ionicPopup) {
+            $scope.cleaningDisabled = false;
+            $scope.cleaning = false;
+            $http({
+                url: $scope.base + 'cleaning-data',
+                method: 'POST',
+                data: {id: $localstorage.uid()}
+            }).then(function successCallback(response) {
+                if (response.data.flash == 'success') {
+                    if (response.data.Records > 0) {
+                        $scope.cleaning = true;
+                        $scope.cleaningDisabled = true;
+                    }
+                } else {
+                    $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                }
+            }, function errorCallback(response) {
+            });
+            
+            $scope.saveCleaning = function (cleaning) {
+                if (cleaning) {
+                    $scope.cleaningDisabled = true;
 
+                    var Record = {};
+                    Record.added_by = $localstorage.uid();
+                    Record.recordtype_id = 3;
+                    $http({
+                        url: $scope.base + 'save-receipt-details',
+                        method: 'POST',
+                        data: Record
+                    }).then(function successCallback(response) {
+                        if (response.data.flash == 'success') {
+                            $scope.alert('Success!', 'Data saved successfully!');
+                            $state.go('markAttendance2.scheduleForTheDay');
+                        } else {
+                            $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                        }
+                    }, function errorCallback(response) {
+                    });
+                }
+            };
         })
 
-        .controller('receiptsCtrl', function ($scope) {
+        .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http, $ionicPopup) {
+            $scope.receiptdata = {};
+            $http({
+                url: $scope.base + 'receipt-data',
+                method: 'POST',
+                data: {}
+            }).then(function successCallback(response) {
+                if (response.data.flash == 'success') {
+                    $scope.receiptdata = response.data;
+                } else {
+                    $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                }
+            }, function errorCallback(response) {
+            });
+
+            $scope.saveReceipt = function (formdata) {
+                formdata.Record.added_by = $localstorage.uid();
+                $http({
+                    url: $scope.base + 'save-receipt-details',
+                    method: 'POST',
+                    data: formdata.Record
+                }).then(function successCallback(response) {
+                    if (response.data.flash == 'success') {
+                        $scope.alert('Success!', 'Data saved successfully!');
+                        $state.go('markAttendance2.scheduleForTheDay');
+                    } else {
+                        $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                    }
+                }, function errorCallback(response) {
+                });
+            };
 
         })
 
@@ -100,10 +171,7 @@ angular.module('app.controllers', [])
                     $scope.wastetypes = response.data.Wastetype;
                     $scope.pickup = response.data.Pickup;
                 } else {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Error Occured!',
-                        template: 'Error Occured! Please try again!'
-                    });
+                    $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                 }
             }, function errorCallback(response) {
             });
@@ -128,16 +196,10 @@ angular.module('app.controllers', [])
                         data: {service: formdata.Pickup, pickup: $scope.pickup}
                     }).then(function successCallback(response) {
                         if (response.data.flash == 'success') {
-                            var alertPopup = $ionicPopup.alert({
-                                title: 'Success!',
-                                template: 'Data saved Successfully!'
-                            });
+                            $scope.alert('Success!', 'Data saved successfully!');
                             $state.go('markAttendance2.scheduleForTheDay');
                         } else {
-                            var alertPopup = $ionicPopup.alert({
-                                title: 'Error Occured!',
-                                template: 'Error Occured! Please try again!'
-                            });
+                            $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                         }
                     }, function errorCallback(response) {
                     });
@@ -175,14 +237,7 @@ angular.module('app.controllers', [])
 
                     });
                 }
-
                 directionsDisplay.setMap(map);
-
-
-
-
-
-
             });
         })
  

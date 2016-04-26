@@ -1,45 +1,41 @@
 <ion-view title="Receipts" id="page6">
     <ion-content padding="true" class="has-header">
-        <form class="list">
+        <form class="list" name="ReceiptForm"  enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
             <label class="item item-select">
                 <span class="input-label">Asset</span>
-                <select>
+                <select ng-model="ReceiptForm.Record.asset_id">
                     <option>Please Select</option>
-                    <option>MH 101001</option>
-                    <option>Equipment 20202</option>
+                    <option ng-repeat="asset in receiptdata.Assets" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
                 </select>
             </label>
             <label class="item item-select">
                 <span class="input-label">Receipt Type</span>
-                <select ng-model="type" ng-init="type = 'Please Select'" >
+                <select ng-model="ReceiptForm.Record.recordtype_id">
                     <option>Please Select</option>
-                    <option value="1">Fuel</option>
-                    <option value="2">Maintenance</option>
+                    <option ng-repeat="recordtype in receiptdata.Recordtype" value="{{recordtype.id}}">{{recordtype.name}}</option>
                 </select>
             </label>
-            <label class="item item-select" ng-if="type == 1">
+            <label class="item item-select" ng-if="ReceiptForm.Record.recordtype_id == 1">
                 <span class="input-label">Fuel Type</span>
-                <select>
-                    <option value="0">Please Select</option>
-                    <option value="1">Diesel</option>
-                    <option value="2">Petrol</option>
-                    <option value="3">CNG</option>
+                <select ng-model="ReceiptForm.Record.fueltype_id">
+                    <option>Please Select</option>
+                    <option ng-repeat="fueltype in receiptdata.Fueltype" value="{{fueltype.id}}">{{fueltype.name}}</option>
                 </select>
             </label>
 
-            <label class="item item-input" name="qty"  ng-if="type == 1">
+            <label class="item item-input" name="qty"  ng-if="ReceiptForm.Record.recordtype_id == 1">
                 <span class="input-label">Fuel Qty</span>
-                <input type="number" placeholder="Qty in Ltrs">
+                <input  ng-model="ReceiptForm.Record.quantity" type="number" placeholder="Qty in Ltrs">
             </label>
             <label class="item item-input" name="price">
                 <span class="input-label">Price</span>
-                <input type="number" placeholder="Price">
+                <input  ng-model="ReceiptForm.Record.amt" type="number" placeholder="Price">
             </label>
             <label class="item item-input" name="attachments">
                 <span class="input-label">Attachment</span>
-                <input type="file" name="file">
+                <input ng-file-model="ReceiptForm.Record.attachment" type="file" name="file">
             </label>
-            <button id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline"> Submit</button>
+            <button type="submit" id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline"> Submit</button>
         </form>
     </ion-content>
 </ion-view>
