@@ -1,15 +1,7 @@
 <ion-view title="Pickup Details" id="page9">
     <ion-content padding="true" class="has-header">
-        <div class="timer">
-            <div bb-stopwatch options="stopwatch">
-                <div class="container">
-                    <div class="stopWatch numbers">
-                        {{stopwatch.elapsedTime| stopwatchTime}}
-                    </div>
-                    <button id="pickupDetails-button15" ng-show="stopwatch.elapsedTimeMS == 0" ng-click="startTimer()" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-energized  button-block button-outline icon ion-android-alarm-clock">Start Timer</button>
-                    <button id="stoptimerbutton" style="display: none;" class="btn" ng-click="stopTimer()">Stop</button>
-                </div>
-            </div>            
+        <div class="timer" style="text-align: center;font-size: 22px;line-height: 35px;">
+             <span countdown='' date='{{timerStartTime}}'>&nbsp;</span>          
         </div>
         <form name="PickupForm" class="list" ng-submit="savePickup(PickupForm)">
             <label ng-repeat="wastetype in wastetypes" class="item item-input">

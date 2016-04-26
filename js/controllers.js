@@ -91,7 +91,7 @@ angular.module('app.controllers', [])
                 }
             }, function errorCallback(response) {
             });
-            
+
             $scope.saveCleaning = function (cleaning) {
                 if (cleaning) {
                     $scope.cleaningDisabled = true;
@@ -161,6 +161,7 @@ angular.module('app.controllers', [])
             $scope.wastetypes = {};
             $scope.stopwatch = {log: 0};
             $scope.pickup = {};
+            $scope.timerStartTime = $localstorage.get('timerStartTime');
 
             $http({
                 url: $scope.base + 'pickup-details',
@@ -187,9 +188,7 @@ angular.module('app.controllers', [])
                 $timeout(function () {
                     $('#stoptimerbutton').trigger('click');
 
-
                     formdata.Pickup.time_taken = $scope.getTimeFormat($scope.stopwatch.log);
-                    console.log(formdata);
                     $http({
                         url: $scope.base + 'save-service-details',
                         method: 'POST',
@@ -209,7 +208,37 @@ angular.module('app.controllers', [])
 
         })
 
-        .controller('routeCtrl', function ($scope, $stateParams) {
+        .controller('startKilometerCtrl', function ($scope, $state, $stateParams, $localstorage, $ionicPopup) {
+            $localstorage.deleteObject('startKilometer');
+            $scope.saveStartKM = function (formdata) {
+                $localstorage.set('startKilometer', formdata.startkilometer);
+                $state.go('markAttendance2.route', $stateParams);
+            };
+        })
+
+
+        .controller('routeCtrl', function ($scope, $http, $state, $stateParams, $localstorage) {
+            $scope.pickup = {};
+            $http({
+                url: $scope.base + 'pickup-details',
+                method: 'POST',
+                data: {id: $stateParams.pickupid}
+            }).then(function successCallback(response) {
+                if (response.data.flash == 'success') {
+                    $scope.pickup = response.data.Pickup;
+                } else {
+                    $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                }
+            }, function errorCallback(response) {
+            });
+
+            $scope.startTimer = function () {
+                var today = new Date();
+                var startTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+                $localstorage.set('timerStartTime',startTime);
+                $state.go('markAttendance2.pickupDetails',{pickupid:$stateParams.pickupid})
+            }
+
             $scope.$on('$ionicView.afterEnter', function () {
                 var directionsService = new google.maps.DirectionsService;
                 var directionsDisplay = new google.maps.DirectionsRenderer;

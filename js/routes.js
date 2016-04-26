@@ -78,11 +78,20 @@ angular.module('app.routes', [])
                     })
 
                     .state('markAttendance2.route', {
-                        url: '/route/:latitude/:longitude',
+                        url: '/route/:pickupid/:latitude/:longitude',
                         views: {
                             'tab2': {
                                 templateUrl: 'templates/route.html',
                                 controller: 'routeCtrl'
+                            }
+                        }
+                    })
+                    .state('markAttendance2.startkilometer', {
+                        url: '/startkilometer/:pickupid/:latitude/:longitude',
+                        views: {
+                            'tab2': {
+                                templateUrl: 'templates/startKilometer.html',
+                                controller: 'startKilometerCtrl'
                             }
                         }
                     })
