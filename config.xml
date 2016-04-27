@@ -18,6 +18,7 @@
     <access origin="*" launch-external="yes" />
     <access origin="http://*" launch-external="yes" />
     <access origin="https://*" launch-external="yes" />
+    <preference name="websecurity" value="disable" />
     <platform name="android" />
     <preference name="orientation" value="portrait" />
     <preference name="fullscreen" value="false" />
