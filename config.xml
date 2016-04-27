@@ -11,9 +11,13 @@
     <description>
         Mobitrash Operator
     </description>
-    <access origin="*"/>
-    <allow-intent href="*"/>
-    <allow-navigation href="*"/>
+    <access origin="*" />
+    <allow-intent href="*" />
+    <allow-navigation href="*" />
+    <access origin="*" subdomains="true" />
+    <access origin="*" launch-external="yes" />
+    <access origin="http://*" launch-external="yes" />
+    <access origin="https://*" launch-external="yes" />
     <platform name="android" />
     <preference name="orientation" value="portrait" />
     <preference name="fullscreen" value="false" />
