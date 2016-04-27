@@ -2,26 +2,13 @@
 <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.mobi.trash"
-        version     = "1.0.0" >
-
-    <!-- versionCode is optional and Android only -->
-
+        version     = "1.0.0" >    
     <name>Mobitrash</name>
-
     <description>
         Mobitrash Operator
     </description>
-    <access origin="*" />
-    <allow-intent href="*" />
-    <allow-navigation href="*" />
-    <access origin="*" subdomains="true" />
-    <access origin="*" launch-external="yes" />
-    <access origin="http://*" launch-external="yes" />
-    <access origin="https://*" launch-external="yes" />
-    <preference name="websecurity" value="disable" />
     <platform name="android" />
     <preference name="orientation" value="portrait" />
     <preference name="fullscreen" value="false" />
     <icon src="icon.png" />
-
 </widget>
