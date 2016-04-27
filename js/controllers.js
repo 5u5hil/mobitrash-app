@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-        .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup) {
+        .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup, $ionicLoading) {
             $scope.base = 'http://mobitrash.cruxservers.in/operator/';
 
             $scope.isLogin = function () {
@@ -20,19 +20,37 @@ angular.module('app.controllers', [])
                 });
             };
 
+            $scope.showLoading = function (text) {
+                if (text) {
+                    $ionicLoading.show({
+                        template: '<ion-spinner icon="android"></ion-spinner>' + text
+                    });
+                } else {
+                    $ionicLoading.show({template: '<ion-spinner icon="android"></ion-spinner>'});
+                }
+            };
+            $scope.hideLoading = function () {
+                $ionicLoading.hide();
+            };
+
+            $scope.ajaxErrorMessage = function () {
+                $scope.alert('Connection Error', 'Unable to Connect');
+            }
+
         })
-        .controller('markAttendanceCtrl', function ($scope, $localstorage, $http, $ionicPopup) {
+        .controller('markAttendanceCtrl', function ($scope, $localstorage, $http) {
             $scope.user = {};
             if ($localstorage.uid()) {
                 $scope.user = $localstorage.getObject('user');
             }
-            console.log($scope.user.first_name);
             $scope.login = function (formdata) {
+                $scope.showLoading();
                 $http({
                     url: $scope.base + 'login',
                     method: 'POST',
                     data: {id: formdata.user.id}
                 }).then(function successCallback(response) {
+                    $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $localstorage.setObject('user', response.data.User);
 
@@ -41,12 +59,15 @@ angular.module('app.controllers', [])
 
                     }
                 }, function errorCallback(response) {
+                    $scope.hideLoading();
+                    $scope.ajaxErrorMessage();
                 });
             }
         })
 
         .controller('scheduleForTheDayCtrl', function ($scope, $localstorage, $http, $ionicHistory) {
             $ionicHistory.clearHistory();
+            $scope.showLoading();
             $scope.schedules = {};
             $scope.pickupmessage = "";
             if ($localstorage.uid()) {
@@ -55,6 +76,7 @@ angular.module('app.controllers', [])
                     method: 'POST',
                     data: {id: $localstorage.uid()}
                 }).then(function successCallback(response) {
+                    $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
                         var index = 0;
@@ -72,18 +94,22 @@ angular.module('app.controllers', [])
                         $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
                 }, function errorCallback(response) {
+                    $scope.hideLoading();
+                    $scope.ajaxErrorMessage();
                 });
             }
         })
 
-        .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http, $ionicPopup) {
+        .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.cleaningDisabled = false;
             $scope.cleaning = false;
+            $scope.showLoading();
             $http({
                 url: $scope.base + 'cleaning-data',
                 method: 'POST',
                 data: {id: $localstorage.uid()}
             }).then(function successCallback(response) {
+                $scope.hideLoading();
                 if (response.data.flash == 'success') {
                     if (response.data.Records > 0) {
                         $scope.cleaning = true;
@@ -93,10 +119,13 @@ angular.module('app.controllers', [])
                     $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                 }
             }, function errorCallback(response) {
+                $scope.hideLoading();
+                $scope.ajaxErrorMessage();
             });
 
             $scope.saveCleaning = function (cleaning) {
                 if (cleaning) {
+                    $scope.showLoading();
                     $scope.cleaningDisabled = true;
 
                     var Record = {};
@@ -107,6 +136,7 @@ angular.module('app.controllers', [])
                         method: 'POST',
                         data: Record
                     }).then(function successCallback(response) {
+                        $scope.hideLoading();
                         if (response.data.flash == 'success') {
                             $scope.alert('Success!', 'Data saved successfully!');
                             $state.go('markAttendance2.scheduleForTheDay');
@@ -114,33 +144,41 @@ angular.module('app.controllers', [])
                             $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                         }
                     }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
                     });
                 }
             };
         })
 
-        .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http, $ionicPopup) {
+        .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.receiptdata = {};
+            $scope.showLoading();
             $http({
                 url: $scope.base + 'receipt-data',
                 method: 'POST',
                 data: {}
             }).then(function successCallback(response) {
+                $scope.hideLoading();
                 if (response.data.flash == 'success') {
                     $scope.receiptdata = response.data;
                 } else {
                     $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                 }
             }, function errorCallback(response) {
+                $scope.hideLoading();
+                $scope.ajaxErrorMessage();
             });
 
             $scope.saveReceipt = function (formdata) {
+                $scope.showLoading();
                 formdata.Record.added_by = $localstorage.uid();
                 $http({
                     url: $scope.base + 'save-receipt-details',
                     method: 'POST',
                     data: formdata.Record
                 }).then(function successCallback(response) {
+                    $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $scope.alert('Success!', 'Data saved successfully!');
                         $state.go('markAttendance2.scheduleForTheDay');
@@ -148,6 +186,8 @@ angular.module('app.controllers', [])
                         $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
                 }, function errorCallback(response) {
+                    $scope.hideLoading();
+                    $scope.ajaxErrorMessage();
                 });
             };
 
@@ -166,13 +206,14 @@ angular.module('app.controllers', [])
             $scope.additives = {};
             $scope.timerStartTime = $localstorage.get('timerStartTime');
             var startTime = new Date($localstorage.get('timerStartTime'));
-            console.log(startTime);
-            $scope.timerstartFormated = startTime.getHours()+':'+startTime.getMinutes()+':'+startTime.getSeconds();
+            $scope.timerstartFormated = startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds();
+            $scope.showLoading();
             $http({
                 url: $scope.base + 'pickup-details',
                 method: 'POST',
                 data: {id: $stateParams.pickupid}
             }).then(function successCallback(response) {
+                $scope.hideLoading();
                 if (response.data.flash == 'success') {
                     $scope.wastetypes = response.data.Wastetype;
                     $scope.additives = response.data.Additive;
@@ -181,9 +222,12 @@ angular.module('app.controllers', [])
                     $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                 }
             }, function errorCallback(response) {
+                $scope.hideLoading();
+                $scope.ajaxErrorMessage();
             });
 
             $scope.savePickup = function (formdata) {
+                $scope.showLoading();
                 var startTime = new Date($localstorage.get('timerStartTime')).getTime();
                 var timeNow = new Date().getTime();
                 var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
@@ -194,6 +238,7 @@ angular.module('app.controllers', [])
                     method: 'POST',
                     data: {service: formdata.Pickup, pickup: $scope.pickup}
                 }).then(function successCallback(response) {
+                    $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $localstorage.delete('timerStartTime');
                         $localstorage.delete('startKilometer');
@@ -203,6 +248,8 @@ angular.module('app.controllers', [])
                         $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
                 }, function errorCallback(response) {
+                    $scope.hideLoading();
+                    $scope.ajaxErrorMessage();
                 });
             };
         })
@@ -218,17 +265,22 @@ angular.module('app.controllers', [])
 
         .controller('routeCtrl', function ($scope, $http, $state, $stateParams, $localstorage) {
             $scope.pickup = {};
+            $scope.showLoading();
             $http({
                 url: $scope.base + 'pickup-details',
                 method: 'POST',
                 data: {id: $stateParams.pickupid}
             }).then(function successCallback(response) {
+                $scope.hideLoading();
                 if (response.data.flash == 'success') {
                     $scope.pickup = response.data.Pickup;
+                    $scope.pickup.max_waste = response.data.Max_waste.max_waste;
                 } else {
                     $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                 }
             }, function errorCallback(response) {
+                $scope.hideLoading();
+                $scope.ajaxErrorMessage();
             });
 
             $scope.startTimer = function () {

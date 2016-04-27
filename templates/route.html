@@ -13,10 +13,14 @@
                 <div class="col">Location Address</div>
                 <div class="col">{{pickup.address.address}}</div>
             </div>
+            <div class="row">
+                <div class="col">Maximum Waste Qty.</div>
+                <div class="col">{{pickup.max_waste}}</div>
+            </div>
         </div>
         <div style="height: 40%;" id="map"></div>
         <div style="height: 15%;" id="bottom-area">
-            <button type="button" ng-click="startTimer()" id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px; margin-top: 50px;" class="button button-assertive  button-block icon ion-android-checkbox-outline">Start Timer</button>
+            <button type="button" ng-click="startTimer()" id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px; margin-top: 50px;" class="button button-assertive  button-block icon ion-android-checkbox-outline"> Start Timer</button>
         </div>
     </ion-content>
     
