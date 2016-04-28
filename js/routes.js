@@ -86,15 +86,6 @@ angular.module('app.routes', [])
                             }
                         }
                     })
-                    .state('markAttendance2.startkilometer', {
-                        url: '/startkilometer/:pickupid/:latitude/:longitude',
-                        views: {
-                            'tab2': {
-                                templateUrl: 'templates/startKilometer.html',
-                                controller: 'startKilometerCtrl'
-                            }
-                        }
-                    })
 
             $urlRouterProvider.otherwise('/attendance/attendance')
 

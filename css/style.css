@@ -11,3 +11,16 @@
     text-align: center;position: fixed;top: 50px; margin: auto; width: 100%;
     border-bottom: 1px solid #ccc;
 }
+.pickup-details{
+    border-bottom: 1px solid #EAEAEA;
+    padding: 5px 0px;
+}
+.pickup-details div:first-child{
+    color: #868686;
+    font-size: 11px;
+}
+
+.pickup-details:last-child{
+    border-bottom: none;
+    padding: 5px 0px;
+}

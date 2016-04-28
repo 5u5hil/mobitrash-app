@@ -1,28 +1,5 @@
 <ion-view title="Location Details" id="page4">
-    <ion-content  class="has-header" scroll="false">
-        <div style="height: auto;" class="card" id="details">
-            <div class="row">
-                <div class="col">Contact Name</div>
-                <div class="col">{{pickup.user.first_name+' '+pickup.user.last_name}}</div>
-            </div>
-            <div class="row">
-                <div class="col">Contact Number</div>
-                <div class="col">{{pickup.user.phone_number}}</div>
-            </div>
-            <div class="row">
-                <div class="col">Location Address</div>
-                <div class="col">{{pickup.address.address}}</div>
-            </div>
-            <div class="row">
-                <div class="col">Maximum Waste Qty.</div>
-                <div class="col">{{pickup.max_waste}}</div>
-            </div>
-        </div>
-        <div style="height: 40%;" id="map"></div>
-        <div style="height: 15%;" id="bottom-area">
-            <button type="button" ng-click="startTimer()" id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px; margin-top: 50px;" class="button button-assertive  button-block icon ion-android-checkbox-outline"> Start Timer</button>
-        </div>
+    <ion-content  class="has-header" scroll="false">        
+        <div id="map"></div>        
     </ion-content>
-    
-    
 </ion-view>
