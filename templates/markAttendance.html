@@ -9,14 +9,14 @@
                 <button id="markAttendance-button1" type="submit" style="border-radius:0px 0px 0px 0px;" class="button button-royal  button-block"> Submit</button>
             </form>
         </div>
-
         <div ng-if="isLogin()" id="markAttendance-markdown2" style="color:#000000;">
             <p>Welcome {{user.first_name}} {{user.last_name}} !</p>
-
-            <p>If this is indeed you then please proceed to mark attendance and if not then kindly re enter your Employee ID .</p>
         </div>
-        <button ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Proceed</button>
-        <div style="text-align: center;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
-        <button ng-if="imageData" ng-click="markAttendance()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon"> Submit</button>
+        <div class="attendance" ng-if="isLogin()">
+            <button ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Proceed</button>
+            <div style="text-align: center;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
+            <button ng-if="imageData" ng-click="markAttendance()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round"> Mark Attendance</button>
+        </div>
+        <div class="logout" ng-if="isLogin()"><button ng-click="logout()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-log-out"> Back</button></div>
     </ion-content>
 </ion-view>

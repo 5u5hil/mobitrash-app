@@ -36,9 +36,14 @@ angular.module('app.controllers', [])
             $scope.ajaxErrorMessage = function () {
                 $scope.alert('Connection Error', 'Unable to Connect');
             }
+            
+            $scope.logout = function(){
+                $localstorage.delete('user');
+                $localstorage.delete('timerStartTime');
+            }
 
         })
-        .controller('markAttendanceCtrl', function ($scope, $localstorage, $http, $cordovaCamera) {
+        .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
             if ($localstorage.uid()) {
@@ -54,7 +59,7 @@ angular.module('app.controllers', [])
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $localstorage.setObject('user', response.data.User);
-
+                        location.reload();
                     } else {
                         $scope.alert('Login Error', 'Invalid ID');
 
@@ -212,7 +217,6 @@ angular.module('app.controllers', [])
                         $scope.hideLoading();
                         if (response.data.flash == 'success') {
                             $scope.alert('Success!', 'Data saved successfully!');
-                            $state.go('markAttendance2.scheduleForTheDay');
                         } else {
                             $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                         }
@@ -254,7 +258,6 @@ angular.module('app.controllers', [])
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $scope.alert('Success!', 'Data saved successfully!');
-                        $state.go('markAttendance2.scheduleForTheDay');
                     } else {
                         $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
@@ -395,16 +398,16 @@ angular.module('app.controllers', [])
                             suppressMarkers: true
                         }
                         directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
-                        var startMarker = new google.maps.Marker({
-                            position: initialLocation,
-                            map: map,
-                            icon: icon
-                        });
-                        var endMarker = new google.maps.Marker({
-                            position: initialLocation,
-                            map: map,
-                            icon: icon
-                        });
+//                        var startMarker = new google.maps.Marker({
+//                            position: initialLocation,
+//                            map: map,
+//                            icon: icon
+//                        });
+//                        var endMarker = new google.maps.Marker({
+//                            position: initialLocation,
+//                            map: map,
+//                            icon: icon
+//                        });
                         marker = new google.maps.Marker({
                             position: initialLocation,
                             map: map,

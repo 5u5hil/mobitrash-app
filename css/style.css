@@ -19,8 +19,3 @@
     color: #868686;
     font-size: 11px;
 }
-
-.pickup-details:last-child{
-    border-bottom: none;
-    padding: 5px 0px;
-}

@@ -15,19 +15,12 @@
         </div>
         <div class="list card" ng-repeat="pickup in schedules.pickups">
             <div class="item item-divider">{{pickup.subscription.name}} </div>
-            <div class="item item-body">
+            <div class="item item-body">                
                 <div class="pickup-details">
-                    <div class="p-title">Address: </div><div>{{pickup.address.address}}</div>                        
+                    <div class="p-title">On field Person Name and Number: </div><div>{{pickup.subscription.onfield_person_name}}&nbsp;&nbsp;- {{pickup.subscription.onfield_person_contact_number}}</span></div>                        
                 </div>
-                <div class="pickup-details">
-                    <div class="p-title">On field person name: </div><div>{{pickup.subscription.onfield_person_name}}</div>                        
-                </div>
-                <div class="pickup-details">
-                    <div class="p-title">On field person contact number </div><div>{{pickup.subscription.onfield_person_contact_number}}</div></div>
-                <div class="pickup-details">
-                    <div class="p-title">Max waste quantity: </div><div>{{pickup.subscription.max_waste}}</div></div>
             </div>
-            <div class="button-bar" ng-if="$index < 1">
+            <div class="button-bar" ng-if="$index < 1 && getstartkilometer">
                 <a ui-sref="markAttendance2.route({latitude:pickup.address.latitude,longitude:pickup.address.longitude})" id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-balanced button-small button-block button-outline icon ion-map"> View Route</a>
                 <!--<a ui-sref="markAttendance2.startkilometer({pickupid:pickup.id, latitude:pickup.address.latitude,longitude:pickup.address.longitude})" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Start Timer</a>-->
                 <a ng-click="startTimer(pickup.id)" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Start Timer</a>
