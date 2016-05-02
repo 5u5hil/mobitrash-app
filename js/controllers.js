@@ -308,6 +308,7 @@ angular.module('app.controllers', [])
                 var timeNow = new Date().getTime();
                 var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
                 formdata.Pickup.time_taken = timeTaken;
+                formdata.Pickup.operator_id = $localstorage.uid();
                 $http({
                     url: $scope.base + 'save-service-details',
                     method: 'POST',
