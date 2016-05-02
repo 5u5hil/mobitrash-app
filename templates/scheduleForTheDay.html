@@ -1,7 +1,7 @@
 <ion-view title="Schedule For The Day" id="page3">
     <ion-content padding="true" class="has-header">
         <div>
-            <div ng-if="!getstartkilometer" >
+            <div ng-if="!getstartkilometer && isLogin()" >
                 <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">
                     <button type="submit" class="button" style="position: absolute;right: 9px;z-index: 99;margin: 1px;min-width: 35px;"><i class="ion ion-checkmark-round"></i></button>
                     <label class="item item-input">                    
@@ -26,7 +26,7 @@
                 <a ng-click="startTimer(pickup.id)" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Start Timer</a>
             </div>
         </div>
-        <div style="text-align: center;">{{pickupmessage}}</div>
+        <div style="text-align: center; padding: 20px 0px; ">{{pickupmessage}}</div>
         <div ng-if="!getendtkilometer && showendkm">
             <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">
                 <button type="submit" class="button" style="position: absolute;right: 9px;z-index: 99;margin: 1px;min-width: 35px;"><i class="ion ion-checkmark-round"></i></button>

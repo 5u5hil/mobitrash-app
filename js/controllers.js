@@ -11,6 +11,14 @@ angular.module('app.controllers', [])
                     return false;
                 }
             }
+            $scope.isTempLogin = function () {
+                /// Check user login status
+                if ($localstorage.getObject('tempuser').id) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
 
             $scope.alert = function (title, message, type) {
                 /// Show alert dialog
@@ -36,9 +44,10 @@ angular.module('app.controllers', [])
             $scope.ajaxErrorMessage = function () {
                 $scope.alert('Connection Error', 'Unable to Connect');
             }
-            
-            $scope.logout = function(){
+
+            $scope.logout = function () {
                 $localstorage.delete('user');
+                $localstorage.delete('tempuser');
                 $localstorage.delete('timerStartTime');
             }
 
@@ -46,8 +55,10 @@ angular.module('app.controllers', [])
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
-            if ($localstorage.uid()) {
+            if($localstorage.uid()){
                 $scope.user = $localstorage.getObject('user');
+            }else{
+                $scope.user = $localstorage.getObject('tempuser');
             }
             $scope.login = function (formdata) {
                 $scope.showLoading();
@@ -58,7 +69,11 @@ angular.module('app.controllers', [])
                 }).then(function successCallback(response) {
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
-                        $localstorage.setObject('user', response.data.User);
+                        if (response.data.Attendance > 0) {
+                            $localstorage.setObject('user', response.data.User);
+                        } else {
+                            $localstorage.setObject('tempuser', response.data.User);
+                        }
                         location.reload();
                     } else {
                         $scope.alert('Login Error', 'Invalid ID');
@@ -97,10 +112,12 @@ angular.module('app.controllers', [])
                 $http({
                     url: $scope.base + 'attendance',
                     method: 'POST',
-                    data: {id: $localstorage.uid(), image_data: $scope.imageData}
+                    data: {id: $localstorage.getObject('tempuser').id, image_data: $scope.imageData}
                 }).then(function successCallback(response) {
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
+                        $localstorage.delete('tempuser');
+                        $localstorage.setObject('user', response.data.User);
                         $scope.alert('Success', 'Attendance Marked Successfully!');
                     } else {
                         $scope.alert('Login Error', 'Invalid ID');
@@ -115,7 +132,7 @@ angular.module('app.controllers', [])
 
         .controller('scheduleForTheDayCtrl', function ($scope, $state, $localstorage, $http, $ionicHistory) {
             $ionicHistory.clearHistory();
-            $scope.showLoading();
+
             $scope.schedules = {};
             $scope.pickupmessage = "";
             $scope.kilometer = {};
@@ -129,33 +146,35 @@ angular.module('app.controllers', [])
                 $state.go('markAttendance2.pickupDetails', {pickupid: pickupid})
             }
             if ($localstorage.uid()) {
+                $scope.showLoading();
                 $http({
                     url: $scope.base + 'schedules',
                     method: 'POST',
                     data: {id: $localstorage.uid()}
                 }).then(function successCallback(response) {
                     $scope.hideLoading();
+                    var index = 0;
+                    $.each(response.data.Schedules.pickups, function (key1, val1) {
+                        if (val1) {
+                            index++;
+                        }
+                    });
+                    if (index == 0) {
+                        $scope.pickupmessage = "No more pickups for today";
+                        $scope.showendkm = true;
+                    }
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
                         $scope.getstartkilometer = response.data.Schedules.start_kilometer;
                         $scope.getendtkilometer = response.data.Schedules.end_kilometer;
-                        var index = 0;
-                        $.each($scope.schedules.pickups, function (key1, val1) {
-                            if (val1) {
-                                index++;
-                            }
-                        });
-                        if (index == 0) {
-                            $scope.pickupmessage = "No more pickups for today";
-                             $scope.showendkm = true;
-                        }
-                    } else {
-                        $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+
                     }
                 }, function errorCallback(response) {
                     $scope.hideLoading();
                     $scope.ajaxErrorMessage();
                 });
+            } else {
+                $scope.pickupmessage = "Please mark your attendance first for today!";
             }
             $scope.submitStartKilometer = function (formdata) {
                 formdata.kilometer.schedule_id = $scope.schedules.id;
@@ -180,8 +199,14 @@ angular.module('app.controllers', [])
 
         .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.cleaningDisabled = false;
-            $scope.cleaning = false;
+            $scope.cleaning = {};
+            $scope.cleaning.record = false;
+            $scope.vans = {};
             $scope.showLoading();
+            $scope.loginmessage;
+            if (!$localstorage.uid()) {
+                $scope.loginmessage = "Please mark your attendance first for today!";
+            }
             $http({
                 url: $scope.base + 'cleaning-data',
                 method: 'POST',
@@ -189,8 +214,9 @@ angular.module('app.controllers', [])
             }).then(function successCallback(response) {
                 $scope.hideLoading();
                 if (response.data.flash == 'success') {
+                    $scope.vans = response.data.Vans;
                     if (response.data.Records > 0) {
-                        $scope.cleaning = true;
+                        $scope.cleaning.record = true;
                         $scope.cleaningDisabled = true;
                     }
                 } else {
@@ -202,13 +228,14 @@ angular.module('app.controllers', [])
             });
 
             $scope.saveCleaning = function (cleaning) {
-                if (cleaning) {
+                if (cleaning.record && cleaning.van_id) {
                     $scope.showLoading();
                     $scope.cleaningDisabled = true;
 
                     var Record = {};
                     Record.added_by = $localstorage.uid();
                     Record.recordtype_id = 3;
+                    Record.asset_id = cleaning.van_id;
                     $http({
                         url: $scope.base + 'save-receipt-details',
                         method: 'POST',
@@ -224,6 +251,8 @@ angular.module('app.controllers', [])
                         $scope.hideLoading();
                         $scope.ajaxErrorMessage();
                     });
+                } else {
+                    $scope.alert('Van required', 'Please select Van and check cleaning!');
                 }
             };
         })
@@ -231,6 +260,9 @@ angular.module('app.controllers', [])
         .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.receiptdata = {};
             $scope.showLoading();
+            if (!$localstorage.uid()) {
+                $scope.loginmessage = "Please mark your attendance first for today!";
+            }
             $http({
                 url: $scope.base + 'receipt-data',
                 method: 'POST',
