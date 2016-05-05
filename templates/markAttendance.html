@@ -16,7 +16,7 @@
             </div>
         <div ng-if="isTempLogin()">
             <button ng-if="!imageData || !isLogin()" ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Proceed</button>
-            <div ng-if="imageData" class="attendance" >
+            <div ng-show="imageData" class="attendance" >
                 <div style="text-align: center;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
                 <button ng-click="markAttendance()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round">Confirm</button>
                 <button ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Click Again</button>

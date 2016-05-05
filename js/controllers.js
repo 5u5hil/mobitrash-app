@@ -167,6 +167,7 @@ angular.module('app.controllers', [])
                         $scope.schedules = response.data.Schedules;
                         $scope.getstartkilometer = response.data.Schedules.start_kilometer;
                         $scope.getendtkilometer = response.data.Schedules.end_kilometer;
+                        $scope.$apply();
 
                     }
                 }, function errorCallback(response) {
