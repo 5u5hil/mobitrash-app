@@ -10,7 +10,7 @@
             <label class="item item-select">
                 <span class="input-label">Receipt Type</span>
                 <select ng-model="ReceiptForm.Record.recordtype_id">
-                    <option ng-repeat="recordtype in receiptdata.Recordtype" ng-selected="recordtype.id == 1" value="{{recordtype.id}}">{{recordtype.name}}</option>
+                    <option ng-repeat="recordtype in receiptdata.Recordtype" value="{{recordtype.id}}">{{recordtype.name}}</option>
                 </select>
             </label>
             <label class="item item-select" ng-if="ReceiptForm.Record.recordtype_id == 1">
