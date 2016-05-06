@@ -1,25 +1,30 @@
-<ion-view title="Pickup Details" id="page9">
+<style>
+    a{
+        pointer-events: none;
+    }
+</style>
+<ion-view hide-tabs title="Pickup Details" id="page9">
     <div class="pickup-timer">
             <div>Started Timer on: {{timerstartFormated}}</div>
             <div class="timer" style="font-size: 22px;line-height: 35px;">
                 <span countdown='' date='{{timerStartTime}}'>&nbsp;</span>          
             </div>
         </div>
-    <ion-content padding="true" class="has-header" style="margin-top: 70px;" >        
+    <ion-content  padding="true" class="has-header" style="margin-top: 70px;" >        
         <form name="PickupForm" class="list" ng-submit="savePickup(PickupForm)">
             <label ng-repeat="wastetype in wastetypes" class="item item-input">
                 <span class="input-label">{{wastetype.name}}</span>
-                <input ng-model="PickupForm.Pickup.wastetype[wastetype.id]['quantity']" required type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.wastetype[wastetype.id]['quantity']" type="number" placeholder="Qty in Kg">
             </label>
             <div class="spacer" style="width: 283px; height: 30px;"></div>
             <label ng-repeat="additive in additives" class="item item-input">
                 <span class="input-label">{{additive.name}}</span>
-                <input ng-model="PickupForm.Pickup.additive[additive.id]['quantity']" required type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.additive[additive.id]['quantity']" type="number" placeholder="Qty in Kg">
             </label>
             <div class="spacer" style="width: 283px; height: 30px;"></div>            
             <label class="item item-input" name="crates_filled">
                 <span class="input-label">Crates Filled</span>
-                <input ng-model="PickupForm.Pickup.crates_filled" required type="number" placeholder="Qty in Kg">
+                <input ng-model="PickupForm.Pickup.crates_filled" type="number" placeholder="No of Crates">
             </label>
             <button type="submit" id="pickupDetails-button16" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block icon ion-android-checkbox-outline"> Submit</button>
         </form>

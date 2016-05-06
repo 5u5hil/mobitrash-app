@@ -8,7 +8,12 @@ angular.module('app.routes', [])
             // Each state's controller can be found in controllers.js
             $stateProvider
 
-
+                    .state('markAttendance2', {
+                        url: '/attendance',
+                        templateUrl: 'templates/markAttendance2.html',
+                        controller: 'AppCtrl',
+                        abstract: true
+                    })
 
                     .state('markAttendance2.markAttendance', {
                         url: '/attendance',
@@ -40,12 +45,7 @@ angular.module('app.routes', [])
                         }
                     })
 
-                    .state('markAttendance2', {
-                        url: '/attendance',
-                        templateUrl: 'templates/markAttendance2.html',
-                        controller: 'AppCtrl',
-                        abstract: true
-                    })
+
 
                     .state('markAttendance2.receipts', {
                         url: '/receipts',

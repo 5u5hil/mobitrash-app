@@ -166,16 +166,16 @@ angular.module('app.controllers', [])
                     method: 'POST',
                     data: {id: $localstorage.uid()}
                 }).then(function successCallback(response) {
-                    $scope.hideLoading();                    
+                    $scope.hideLoading();
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
                         $scope.getstartkilometer = response.data.Schedules.start_kilometer;
                         $scope.getendtkilometer = response.data.Schedules.end_kilometer;
-                        if(response.data.Schedules.pickups.length == 0){
+                        if (response.data.Schedules.pickups.length == 0) {
                             $scope.pickupmessage = "No more pickups for today";
-                        $scope.showendkm = true;
+                            $scope.showendkm = true;
                         }
-                    }else{
+                    } else {
                         $scope.pickupmessage = "No more pickups for today";
                         $scope.showendkm = true;
                     }
@@ -204,7 +204,7 @@ angular.module('app.controllers', [])
                     $scope.hideLoading();
                     $scope.ajaxErrorMessage();
                 });
-            }            
+            }
         })
 
         .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
@@ -315,13 +315,13 @@ angular.module('app.controllers', [])
         })
 
         .controller('getClickedCtrl', function ($scope) {
-
             var objCanvas = document.getElementById("video");
             window.plugin.CanvasCamera.initialize(objCanvas);
-
         })
 
-        .controller('pickupDetailsCtrl', function ($scope, $state, $http, $stateParams, $localstorage, Util) {
+        .controller('pickupDetailsCtrl', function ($scope, $state, $ionicNavBarDelegate, $http, $stateParams, $localstorage, Util) {
+            $ionicNavBarDelegate.showBackButton(false);
+            
             $scope.wastetypes = {};
             $scope.pickup = {};
             $scope.additives = {};
@@ -348,31 +348,34 @@ angular.module('app.controllers', [])
             });
 
             $scope.savePickup = function (formdata) {
-                $scope.showLoading();
-                var startTime = new Date($localstorage.get('timerStartTime')).getTime();
-                var timeNow = new Date().getTime();
-                var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
-                formdata.Pickup.time_taken = timeTaken;
-                formdata.Pickup.operator_id = $localstorage.uid();
-                $http({
-                    url: $scope.base + 'save-service-details',
-                    method: 'POST',
-                    data: {service: formdata.Pickup, pickup: $scope.pickup}
-                }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    if (response.data.flash == 'success') {
-                        $localstorage.delete('timerStartTime');
-                        $localstorage.delete('startKilometer');
-                        $scope.alert('Success!', 'Data saved successfully!');
-                        $state.go('markAttendance2.scheduleForTheDay');
-                    } else {
-                        $scope.alert('Error Occured!', 'Error Occured! Please try again!');
-                    }
-                }, function errorCallback(response) {
-                    $scope.hideLoading();
-                    $scope.ajaxErrorMessage();
-                });
+                if (formdata.Pickup.additive && formdata.Pickup.wastetype){
+                    $scope.showLoading();
+                    var startTime = new Date($localstorage.get('timerStartTime')).getTime();
+                    var timeNow = new Date().getTime();
+                    var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
+                    formdata.Pickup.time_taken = timeTaken;
+                    formdata.Pickup.operator_id = $localstorage.uid();
+                    $http({
+                        url: $scope.base + 'save-service-details',
+                        method: 'POST',
+                        data: {service: formdata.Pickup, pickup: $scope.pickup}
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            $localstorage.delete('timerStartTime');
+                            $localstorage.delete('startKilometer');
+                            $scope.alert('Success!', 'Data saved successfully!');
+                            $state.go('markAttendance2.scheduleForTheDay');
+                        } else {
+                            $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                    });
+                }
             };
+
         })
 
         .controller('routeCtrl', function ($scope, $http, $state, $stateParams, $localstorage) {
