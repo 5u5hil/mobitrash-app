@@ -1,6 +1,7 @@
 <ion-view title="Receipts" id="page6">
     <ion-content padding="true" class="has-header">
-        <form ng-if="isLogin()" class="list" name="ReceiptForm"  enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
+        <form ng-if="isLogin()" class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
+            
             <label class="item item-select">
                 <span class="input-label">Asset</span>
                 <select ng-model="ReceiptForm.Record.asset_id">
@@ -9,8 +10,8 @@
             </label>
             <label class="item item-select">
                 <span class="input-label">Receipt Type</span>
-                <select ng-model="ReceiptForm.Record.recordtype_id">
-                    <option ng-repeat="recordtype in receiptdata.Recordtype" value="{{recordtype.id}}">{{recordtype.name}}</option>
+                <select ng-model="ReceiptForm.Record.recordtype_id" ng-init="ReceiptForm.Record.recordtype_id=1">
+                    <option ng-repeat="recordtype in receiptdata.Recordtype" ng-selected="{{recordtype.id==1?true:false}}" value="{{recordtype.id}}">{{recordtype.name}}</option>
                 </select>
             </label>
             <label class="item item-select" ng-if="ReceiptForm.Record.recordtype_id == 1">

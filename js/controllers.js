@@ -55,9 +55,23 @@ angular.module('app.controllers', [])
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
-            if($localstorage.uid()){
+            if ($localstorage.uid()) {
                 $scope.user = $localstorage.getObject('user');
-            }else{
+                $scope.showLoading();
+                $http({
+                    url: $scope.base + 'get-attendance',
+                    method: 'POST',
+                    data: {id: $localstorage.uid()}
+                }).then(function successCallback(response) {
+                    $scope.hideLoading();
+                    if (response.data.attendance == false) {
+                        $scope.logout();
+                    }
+                }, function errorCallback(response) {
+                    $scope.hideLoading();
+                    $scope.logout();
+                });
+            } else {
                 $scope.user = $localstorage.getObject('tempuser');
             }
             $scope.login = function (formdata) {
@@ -152,23 +166,18 @@ angular.module('app.controllers', [])
                     method: 'POST',
                     data: {id: $localstorage.uid()}
                 }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    var index = 0;
-                    $.each(response.data.Schedules.pickups, function (key1, val1) {
-                        if (val1) {
-                            index++;
-                        }
-                    });
-                    if (index == 0) {
-                        $scope.pickupmessage = "No more pickups for today";
-                        $scope.showendkm = true;
-                    }
+                    $scope.hideLoading();                    
                     if (response.data.flash == 'success') {
                         $scope.schedules = response.data.Schedules;
                         $scope.getstartkilometer = response.data.Schedules.start_kilometer;
                         $scope.getendtkilometer = response.data.Schedules.end_kilometer;
-                        $scope.$apply();
-
+                        if(response.data.Schedules.pickups.length == 0){
+                            $scope.pickupmessage = "No more pickups for today";
+                        $scope.showendkm = true;
+                        }
+                    }else{
+                        $scope.pickupmessage = "No more pickups for today";
+                        $scope.showendkm = true;
                     }
                 }, function errorCallback(response) {
                     $scope.hideLoading();
@@ -186,8 +195,8 @@ angular.module('app.controllers', [])
                 }).then(function successCallback(response) {
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
-                        $scope.getstartkilometer = formdata.kilometer.start;
-                        $scope.getendtkilometer = formdata.kilometer.end;
+                        $scope.getstartkilometer = response.data.start;
+                        $scope.getendtkilometer = response.data.end;
                     } else {
                         $scope.alert('Error Occured!', 'Error Occured! Please try again!');
                     }
@@ -195,7 +204,7 @@ angular.module('app.controllers', [])
                     $scope.hideLoading();
                     $scope.ajaxErrorMessage();
                 });
-            }
+            }            
         })
 
         .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
@@ -261,6 +270,9 @@ angular.module('app.controllers', [])
         .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.receiptdata = {};
             $scope.showLoading();
+            $scope.ReceiptForm = {};
+            $scope.ReceiptForm.Record = {};
+            $scope.ReceiptForm.Record.recordtype_id = 1;
             if (!$localstorage.uid()) {
                 $scope.loginmessage = "Please mark your attendance first for today!";
             }
