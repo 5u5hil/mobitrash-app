@@ -1,7 +1,7 @@
 <ion-view title="Schedule For The Day" id="page3">
     <ion-content padding="true" class="has-header">
         <div>
-            <div ng-if="!getstartkilometer && isLogin()" >
+            <div ng-if="!getstartkilometer && isLogin() && showstartkm" >
                 <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">
                     <button type="submit" class="button" style="position: absolute;right: 9px;z-index: 99;margin: 1px;min-width: 35px;"><i class="ion ion-checkmark-round"></i></button>
                     <label class="item item-input">                    

@@ -153,6 +153,7 @@ angular.module('app.controllers', [])
             $scope.getstartkilometer;
             $scope.getendtkilometer;
             $scope.showendkm = false;
+            $scope.showstartkm = true;
             $scope.startTimer = function (pickupid) {
                 var today = new Date();
                 var startTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
@@ -177,11 +178,14 @@ angular.module('app.controllers', [])
                         }
                     } else {
                         $scope.pickupmessage = "No more pickups for today";
-                        $scope.showendkm = true;
+                        $scope.showendkm = false;
+                        $scope.showstartkm = false;
                     }
                 }, function errorCallback(response) {
                     $scope.hideLoading();
                     $scope.ajaxErrorMessage();
+                    $scope.showendkm = false;
+                    $scope.showstartkm = false;
                 });
             } else {
                 $scope.pickupmessage = "Please mark your attendance first for today!";
@@ -321,7 +325,7 @@ angular.module('app.controllers', [])
 
         .controller('pickupDetailsCtrl', function ($scope, $state, $ionicNavBarDelegate, $http, $stateParams, $localstorage, Util) {
             $ionicNavBarDelegate.showBackButton(false);
-            
+
             $scope.wastetypes = {};
             $scope.pickup = {};
             $scope.additives = {};
@@ -348,7 +352,7 @@ angular.module('app.controllers', [])
             });
 
             $scope.savePickup = function (formdata) {
-                if (formdata.Pickup.additive && formdata.Pickup.wastetype){
+                if (formdata.Pickup.additive && formdata.Pickup.wastetype) {
                     $scope.showLoading();
                     var startTime = new Date($localstorage.get('timerStartTime')).getTime();
                     var timeNow = new Date().getTime();
@@ -373,6 +377,9 @@ angular.module('app.controllers', [])
                         $scope.hideLoading();
                         $scope.ajaxErrorMessage();
                     });
+                }
+                else{
+                    $scope.alert('Error! Fields Required!', 'Minimum 1 Wastetype Qty. and 1 Additive Qty. is required.!');
                 }
             };
 
