@@ -433,7 +433,7 @@ angular.module('app.controllers', [])
                         }
                     }
                     navigator.geolocation.getCurrentPosition(function (position) {
-
+                        console.log(position);
                         var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         startCoord = [position.coords.latitude, position.coords.longitude];
                         var destination = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);
@@ -446,7 +446,7 @@ angular.module('app.controllers', [])
                             if (status === google.maps.DirectionsStatus.OK) {
                                 directionsDisplay.setDirections(response);
                             } else {
-                                window.alert('Directions request failed due to ' + status);
+                                $scope.alert('Directions request failed due to ' + status);
                             }
                         });
                         var rendererOptions = {
@@ -471,6 +471,8 @@ angular.module('app.controllers', [])
                         });
 
 
+                    },function(err){
+                        $scope.alert('Location Error!', 'Location Unavailable!');
                     });
 
                     setInterval(function () {
