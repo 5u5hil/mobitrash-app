@@ -75,28 +75,30 @@ angular.module('app.controllers', [])
                 $scope.user = $localstorage.getObject('tempuser');
             }
             $scope.login = function (formdata) {
-                $scope.showLoading();
-                $http({
-                    url: $scope.base + 'login',
-                    method: 'POST',
-                    data: {id: formdata.user.id}
-                }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    if (response.data.flash == 'success') {
-                        if (response.data.Attendance > 0) {
-                            $localstorage.setObject('user', response.data.User);
+                if (formdata.user.id) {
+                    $scope.showLoading();
+                    $http({
+                        url: $scope.base + 'login',
+                        method: 'POST',
+                        data: {id: formdata.user.id}
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            if (response.data.Attendance > 0) {
+                                $localstorage.setObject('user', response.data.User);
+                            } else {
+                                $localstorage.setObject('tempuser', response.data.User);
+                            }
+                            location.reload();
                         } else {
-                            $localstorage.setObject('tempuser', response.data.User);
-                        }
-                        location.reload();
-                    } else {
-                        $scope.alert('Login Error', 'Invalid ID');
+                            $scope.alert('Login Error', 'Invalid ID');
 
-                    }
-                }, function errorCallback(response) {
-                    $scope.hideLoading();
-                    $scope.ajaxErrorMessage();
-                });
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                    });
+                }
             }
             $scope.getCamera = function () {
                 document.addEventListener("deviceready", function () {
@@ -377,8 +379,7 @@ angular.module('app.controllers', [])
                         $scope.hideLoading();
                         $scope.ajaxErrorMessage();
                     });
-                }
-                else{
+                } else {
                     $scope.alert('Error! Fields Required!', 'Minimum 1 Wastetype Qty. and 1 Additive Qty. is required.!');
                 }
             };
@@ -446,7 +447,7 @@ angular.module('app.controllers', [])
                             if (status === google.maps.DirectionsStatus.OK) {
                                 directionsDisplay.setDirections(response);
                             } else {
-                                $scope.alert('Directions request failed due to ' + status);
+                                //$scope.alert('Directions request failed due to ' + status);
                             }
                         });
                         var rendererOptions = {
@@ -471,8 +472,8 @@ angular.module('app.controllers', [])
                         });
 
 
-                    },function(err){
-                        $scope.alert('Location Error!', 'Location Unavailable!');
+                    }, function (err) {
+                        //$scope.alert('Location Error!', 'Location Unavailable!');
                     });
 
                     setInterval(function () {

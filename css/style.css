@@ -19,3 +19,37 @@
     color: #868686;
     font-size: 11px;
 }
+
+[nav-bar-transition="ios"] [nav-bar="active"] .bar, [nav-bar-transition="ios"] [nav-bar="entering"] .bar {
+    background: #87C540!important;
+}
+
+[nav-bar-transition="android"] [nav-bar="active"] .bar, [nav-bar-transition="android"] [nav-bar="entering"] .bar {
+    background: #87C540!important;
+}
+
+.bar.bar-stable .title {
+    color: #FFF!important;
+}
+
+.bar-stable .button {
+    color: #FFF!important;
+}
+ion-content{
+    background: #EEEEEE;
+}
+
+
+.tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
+    opacity: 1;
+    color: #87C540!important;
+    border-top: 2px solid #87C540!important;
+}
+
+.button{    
+    background: #FFFFFF;
+}
+
+.active-pickup{
+    box-shadow: 0px 0px 4px #000!important;
+}

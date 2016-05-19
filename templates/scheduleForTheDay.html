@@ -11,9 +11,9 @@
                     </label> 
                 </form>
             </div>
-            <div style="padding: 12px; border: 1px solid #E4E4E4;" ng-if="getstartkilometer">Start Kilometers:  {{getstartkilometer}}</div>
+            <div style="padding: 12px; border: 1px solid #E4E4E4; background: #fff;" ng-if="getstartkilometer">Start Kilometers:  {{getstartkilometer}}</div>
         </div>
-        <div class="list card" ng-repeat="pickup in schedules.pickups">
+        <div class="list card {{$index < 1 && getstartkilometer ? 'active-pickup' : ''}}" ng-repeat="pickup in schedules.pickups">
             <div class="item item-divider">{{pickup.subscription.name}} </div>
             <div class="item item-body">                
                 <div class="pickup-details">
@@ -21,9 +21,8 @@
                 </div>
             </div>
             <div class="button-bar" ng-if="$index < 1 && getstartkilometer">
-                <a ui-sref="markAttendance2.route({latitude:pickup.subscription.address.latitude,longitude:pickup.subscription.address.longitude})" id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-balanced button-small button-block button-outline icon ion-map"> View Route</a>
-                <!--<a ui-sref="markAttendance2.startkilometer({pickupid:pickup.id, latitude:pickup.address.latitude,longitude:pickup.address.longitude})" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Start Timer</a>-->
-                <a ng-click="startTimer(pickup.id)" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive button-small button-block button-outline icon ion-ios-list-outline"> Start Timer</a>
+                <a ui-sref="markAttendance2.route({latitude:pickup.subscription.address.latitude,longitude:pickup.subscription.address.longitude})" id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px; background: #777777; border: 1px solid #464646;border-right: none; color: #fff;" class="button button-balanced button-small button-block button-outline"> View Route</a>
+                <a ng-click="startTimer(pickup.id)" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px; background: #777777; border: 1px solid #464646;color: #fff;" class="button button-assertive button-small button-block button-outline"> Start Timer</a>
             </div>
         </div>
         <div style="text-align: center; padding: 20px 0px; ">{{pickupmessage}}</div>
@@ -36,7 +35,7 @@
                 </label> 
             </form>
         </div>
-        <div style="padding: 12px; border: 1px solid #E4E4E4;" ng-if="getendtkilometer && showendkm">End Kilometers:  {{getendtkilometer}}</div>
+        <div style="padding: 12px; border: 1px solid #E4E4E4; background: #fff;" ng-if="getendtkilometer && showendkm">End Kilometers:  {{getendtkilometer}}</div>
 
 
     </ion-content>

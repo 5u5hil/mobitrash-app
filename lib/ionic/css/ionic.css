@@ -8685,7 +8685,7 @@ progress {
       background: none; }
     .button.button-assertive.button-outline {
       border-color: #ef473a;
-      background: transparent;
+      background: #fff;
       color: #ef473a; }
       .button.button-assertive.button-outline.active, .button.button-assertive.button-outline.activated {
         background-color: #ef473a;
