@@ -1,6 +1,6 @@
 <ion-view title="Mark Attendance" id="page2">
     <ion-content padding="true" class="has-header">
-        <div ng-show="!isTempLogin() && !isLogin()">
+        <div id="login-box" ng-show="!isTempLogin() && !isLogin()">
             <form  name="LoginForm" class="list" ng-submit="login(LoginForm)">
                 <label class="item item-input" name="empid">
                     <span class="input-label">Input</span>
@@ -11,7 +11,7 @@
         </div>        
         <div  id="markAttendance-markdown2" style="color:#000000;">
             <p ng-show="isTempLogin() || isLogin()" style="font-size: 17px;">Welcome {{user.name}} !</p>
-            <p ng-show="isTempLogin()" style="color: #636363;">If this is not you then <button style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-arrow-left-c" ng-click="logout()" style="font-weight: bolder;color: #DC4338;"> ReLogin</button></p>
+            <p ng-show="isTempLogin() && !imageData " style="color: #636363;">If this is not you then <button style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-arrow-left-c" ng-click="logout()"> ReLogin</button></p>
             <p ng-show="isLogin()" style="color: #636363;">Your today's attendance marked successfully! <button ng-click="logout()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline"> New Login</button></p>
         </div>
         <div ng-show="isTempLogin()">

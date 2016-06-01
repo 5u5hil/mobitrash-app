@@ -1,7 +1,7 @@
 angular.module('app.controllers', [])
 
         .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup, $ionicLoading) {
-            $scope.base = 'http://mobitrash.cruxservers.in/operator/';
+            $scope.base = 'http://mobitrash.in/operator/';
 
             $scope.isLogin = function () {
                 /// Check user login status
@@ -55,6 +55,8 @@ angular.module('app.controllers', [])
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
+            $("#login-box").css('margin-top', ($(document).height()/2 - 110)+'px');
+            console.log($(document).height());
             if ($localstorage.uid()) {
                 $scope.user = $localstorage.getObject('user');
                 $scope.showLoading();
