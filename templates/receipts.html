@@ -29,10 +29,17 @@
                 <span class="input-label">Price</span>
                 <input  ng-model="ReceiptForm.Record.amt" type="number" placeholder="Price">
             </label>
-            <label class="item item-input" name="attachments">
+            <div class="item item-input" name="attachments">
                 <span class="input-label">Attachment</span>
-                <input ng-file-model="ReceiptForm.Record.attachment" type="file" name="file">
-            </label>
+                <div style="display: block;clear: both;"><img id="receipt-attachment" src="" style="width:100px;background:#fff;border:1px solid #ccc;" /></div>    
+            </div>
+            <div class="item item-input" name="attachments" style="border-top: none;">
+                <span class="input-label"></span>
+                <button class="button button-balanced" ng-click="getCameraFiles('camera')" style="width: 25%; margin-right: 10px;" id="getCamera" type="button">Camera</button>             
+                <button class="button button-balanced" ng-click="getCameraFiles('files')" style="width: 25%" id="getFiles" type="button">Files</button>
+                <input ng-model="ReceiptForm.Record.attachment" type="hidden" name="file">                
+            </div>
+            
             <button type="submit" id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline"> Submit</button>
         </form>
         <div style="text-align: center; padding: 20px 0px; ">{{loginmessage}}</div>

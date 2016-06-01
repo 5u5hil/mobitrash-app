@@ -275,7 +275,7 @@ angular.module('app.controllers', [])
             };
         })
 
-        .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http) {
+        .controller('receiptsCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.receiptdata = {};
             $scope.showLoading();
             $scope.ReceiptForm = {};
@@ -299,6 +299,33 @@ angular.module('app.controllers', [])
                 $scope.hideLoading();
                 $scope.ajaxErrorMessage();
             });
+            
+            $scope.getCameraFiles = function (mode) {
+                var source = Camera.PictureSourceType.CAMERA;
+                if(mode == 'files'){
+                    source = Camera.PictureSourceType.PHOTOLIBRARY;
+                }
+                document.addEventListener("deviceready", function () {
+                    var options = {
+                        quality: 75,
+                        destinationType: Camera.DestinationType.DATA_URL,
+                        sourceType: source,
+                        allowEdit: false,
+                        encodingType: Camera.EncodingType.JPEG,
+                        targetWidth: 1000,
+                        targetHeight: 1000,
+                        saveToPhotoAlbum: false,
+                        correctOrientation: true
+                    };
+
+                    $cordovaCamera.getPicture(options).then(function (imageData) {
+                        var image = document.getElementById('receipt-attachment');
+                        image.src = "data:image/jpeg;base64," + imageData;
+                        $scope.ReceiptForm.Record.attachment = imageData;
+                    }, function (err) {
+                    });
+                }, false);
+            }
 
             $scope.saveReceipt = function (formdata) {
                 $scope.showLoading();
@@ -319,6 +346,8 @@ angular.module('app.controllers', [])
                     $scope.ajaxErrorMessage();
                 });
             };
+            
+            
 
         })
 
