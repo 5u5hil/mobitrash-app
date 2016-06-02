@@ -1,5 +1,7 @@
 <ion-view title="Schedule For The Day" id="page3">
     <ion-content padding="true" class="has-header">
+        
+        <div style="width: 100%;height: 40px;" ng-click="uploadOfflineData()" ng-show="showUpload()"><div class="right-button"><i class="ion ion-android-upload"></i></div></div>
         <div>
             <div ng-if="!getstartkilometer && isLogin() && showstartkm" >
                 <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">

@@ -59,11 +59,18 @@ ion-content{
     background: url(../icon.png) center center no-repeat;
     width: 44px;
     height: 43px;
-
     background-size: cover;
     margin-top: -5px;
-   }
-   
-   #login-box{
-       margin-top: 100px;
-   }
+}
+
+#login-box{
+    margin-top: 100px;
+}
+
+.right-button{
+    color: #87C540;
+    font-size: 32px;
+    right: 5px;
+    z-index: 99999;
+    position: absolute
+}

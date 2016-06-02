@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-        .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup, $ionicLoading) {
+        .controller('AppCtrl', function ($scope, $localstorage, $ionicPopup, $ionicLoading, $http, $cordovaNetwork) {
             $scope.base = 'http://mobitrash.in/operator/';
 
             $scope.isLogin = function () {
@@ -51,12 +51,42 @@ angular.module('app.controllers', [])
                 $localstorage.delete('timerStartTime');
             }
 
+            $scope.showUpload = function () {
+                var pickup = $localstorage.getObject('uploadPickup');
+                var km = $localstorage.getObject('uploadKM');
+                if (pickup.length > 0 || km.length > 0) {
+                    return true;
+                }
+                return false;
+            };
+            $scope.uploadOfflineData = function () {
+                var pickup = $localstorage.getObject('uploadPickup');
+                var km = $localstorage.getObject('uploadKM');
+                if ($cordovaNetwork.isOffline()) { //Ofline
+                    $scope.showLoading();
+                    $http({
+                        url: $scope.base + 'upload-offline-data',
+                        method: 'POST',
+                        data: {offlinePickup: pickup, offlineKM: km}
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            $localstorage.delete('uploadPickup');
+                            $localstorage.delete('uploadKM');
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                    });
+                } else {
+                    $scope.alert('You are Offline', 'You are offline! Please try again!');
+                }
+            }
+
         })
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
-            
-            console.log($(document).height());
             if ($localstorage.uid()) {
                 $scope.user = $localstorage.getObject('user');
                 $scope.showLoading();
@@ -148,9 +178,8 @@ angular.module('app.controllers', [])
             }
         })
 
-        .controller('scheduleForTheDayCtrl', function ($scope, $state, $localstorage, $http, $ionicHistory) {
+        .controller('scheduleForTheDayCtrl', function ($scope, $state, $localstorage, $http, $ionicHistory, $cordovaNetwork) {
             $ionicHistory.clearHistory();
-
             $scope.schedules = {};
             $scope.pickupmessage = "";
             $scope.kilometer = {};
@@ -165,18 +194,18 @@ angular.module('app.controllers', [])
                 $state.go('markAttendance2.pickupDetails', {pickupid: pickupid})
             }
             if ($localstorage.uid()) {
-                $scope.showLoading();
-                $http({
-                    url: $scope.base + 'schedules',
-                    method: 'POST',
-                    data: {id: $localstorage.uid()}
-                }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    if (response.data.flash == 'success') {
-                        $scope.schedules = response.data.Schedules;
-                        $scope.getstartkilometer = response.data.Schedules.start_kilometer;
-                        $scope.getendtkilometer = response.data.Schedules.end_kilometer;
-                        if (response.data.Schedules.pickups.length == 0) {
+                if ($cordovaNetwork.isOffline()) {  //Offline
+                    var schedules = [];
+                    schedules = $localstorage.getObject('Schedules');
+                    if (schedules.hasOwnProperty('Schedules')) {
+                        $scope.schedules = schedules.Schedules;
+                        $scope.getstartkilometer = schedules.Schedules.start_kilometer;
+                        $scope.getendtkilometer = schedules.Schedules.end_kilometer;
+                        var count = 0;
+                        $.each(schedules.Schedules.pickups,function(key,pickup){
+                            count++;
+                        });
+                        if (count == 0) {
                             $scope.pickupmessage = "No more pickups for today";
                             $scope.showendkm = true;
                         }
@@ -185,34 +214,127 @@ angular.module('app.controllers', [])
                         $scope.showendkm = false;
                         $scope.showstartkm = false;
                     }
-                }, function errorCallback(response) {
-                    $scope.hideLoading();
-                    $scope.ajaxErrorMessage();
-                    $scope.showendkm = false;
-                    $scope.showstartkm = false;
-                });
+                } else { //Online forced false
+                    $scope.showLoading();
+                    $http({
+                        url: $scope.base + 'schedules',
+                        method: 'POST',
+                        data: {id: $localstorage.uid()}
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            $localstorage.setObject('Schedules', response.data);
+                            $scope.schedules = response.data.Schedules;
+                            $scope.getstartkilometer = response.data.Schedules.start_kilometer;
+                            $scope.getendtkilometer = response.data.Schedules.end_kilometer;
+                            if (response.data.Schedules.pickups.length == 0) {
+                                $scope.pickupmessage = "No more pickups for today";
+                                $scope.showendkm = true;
+                            }
+                        } else {
+                            $scope.pickupmessage = "No more pickups for today";
+                            $scope.showendkm = false;
+                            $scope.showstartkm = false;
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                        $scope.showendkm = false;
+                        $scope.showstartkm = false;
+                    });
+                }
             } else {
                 $scope.pickupmessage = "Please mark your attendance first for today!";
             }
             $scope.submitStartKilometer = function (formdata) {
                 formdata.kilometer.schedule_id = $scope.schedules.id;
-                $http({
-                    url: $scope.base + 'update-km',
-                    method: 'POST',
-                    data: formdata.kilometer
-                }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    if (response.data.flash == 'success') {
-                        $scope.getstartkilometer = response.data.start;
-                        $scope.getendtkilometer = response.data.end;
-                    } else {
-                        $scope.alert('Error Occured!', 'Error Occured! Please try again!');
-                    }
-                }, function errorCallback(response) {
-                    $scope.hideLoading();
-                    $scope.ajaxErrorMessage();
-                });
+                if ($cordovaNetwork.isOffline()) {  //Offline
+                    $localstorage.setObject('uploadKM', formdata.kilometer);
+                    var scheduleData = $localstorage.getObject('Schedules');
+                    scheduleData.Schedules.start_kilometer = formdata.kilometer.start;
+                    scheduleData.Schedules.end_kilometer = formdata.kilometer.end;
+                    $localstorage.setObject('Schedules', scheduleData);
+                    $scope.getstartkilometer = formdata.kilometer.start;
+                    $scope.getendtkilometer = formdata.kilometer.end;
+                    $scope.alert('You are Offline!', 'Data saved, but not uploaded! When online press Upload button to Synk with Server');
+
+                } else { //Online
+                    $http({
+                        url: $scope.base + 'update-km',
+                        method: 'POST',
+                        data: formdata.kilometer
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            $scope.getstartkilometer = response.data.start;
+                            $scope.getendtkilometer = response.data.end;
+                        } else {
+                            $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                    });
+                }
             }
+        })
+
+        .controller('pickupDetailsCtrl', function ($scope, $state, $ionicNavBarDelegate, $http, $cordovaNetwork, $stateParams, $localstorage, Util) {
+            $ionicNavBarDelegate.showBackButton(false);
+
+            $scope.wastetypes = $localstorage.getObject('Schedules').Wastetype;
+            $scope.additives = $localstorage.getObject('Schedules').Additive;
+            $scope.pickup = $localstorage.getObject('Schedules').Schedules.pickups[$stateParams.pickupid];
+            $scope.timerStartTime = $localstorage.get('timerStartTime');
+            var startTime = new Date($localstorage.get('timerStartTime'));
+            $scope.timerstartFormated = startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds();
+
+            $scope.savePickup = function (formdata) {
+                if (formdata.Pickup.additive && formdata.Pickup.wastetype) {
+                    var today = new Date();
+                    var CurrentDateTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+                    var startTime = new Date($localstorage.get('timerStartTime')).getTime();
+                    var timeNow = new Date().getTime();
+                    var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
+                    formdata.Pickup.time_taken = timeTaken;
+                    formdata.Pickup.created_at = CurrentDateTime;
+                            formdata.Pickup.operator_id = $localstorage.uid();
+
+                    if ($cordovaNetwork.isOffline()) {  //Offline 
+                        var uploadPickup = $localstorage.getObject('uploadPickup');
+                        uploadPickup.push({service: formdata.Pickup, pickup: $scope.pickup});
+                        $localstorage.setObject('uploadPickup', uploadPickup);
+                        $localstorage.delete('timerStartTime');
+                        var scheduleData = $localstorage.getObject('Schedules');
+                        delete scheduleData.Schedules.pickups[$stateParams.pickupid];
+                        $localstorage.setObject('Schedules', scheduleData);
+                        $scope.alert('You are Offline!', 'Data saved, but not uploaded! When online press Upload button to Synk with Server');
+                        $state.go('markAttendance2.scheduleForTheDay');
+                    } else {  //Online
+                        $scope.showLoading();
+                        $http({
+                            url: $scope.base + 'save-service-details',
+                            method: 'POST',
+                            data: {service: formdata.Pickup, pickup: $scope.pickup}
+                        }).then(function successCallback(response) {
+                            $scope.hideLoading();
+                            if (response.data.flash == 'success') {
+                                $localstorage.delete('timerStartTime');
+                                $scope.alert('Success!', 'Data saved successfully!');
+                                $state.go('markAttendance2.scheduleForTheDay');
+                            } else {
+                                $scope.alert('Error Occured!', 'Error Occured! Please try again!');
+                            }
+                        }, function errorCallback(response) {
+                            $scope.hideLoading();
+                            $scope.ajaxErrorMessage();
+                        });
+                    }
+                } else {
+                    $scope.alert('Error! Fields Required!', 'Minimum 1 Wastetype Qty. and 1 Additive Qty. is required.!');
+                }
+            };
+
         })
 
         .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
@@ -299,10 +421,10 @@ angular.module('app.controllers', [])
                 $scope.hideLoading();
                 $scope.ajaxErrorMessage();
             });
-            
+
             $scope.getCameraFiles = function (mode) {
                 var source = Camera.PictureSourceType.CAMERA;
-                if(mode == 'files'){
+                if (mode == 'files') {
                     source = Camera.PictureSourceType.PHOTOLIBRARY;
                 }
                 document.addEventListener("deviceready", function () {
@@ -346,8 +468,8 @@ angular.module('app.controllers', [])
                     $scope.ajaxErrorMessage();
                 });
             };
-            
-            
+
+
 
         })
 
@@ -356,66 +478,7 @@ angular.module('app.controllers', [])
             window.plugin.CanvasCamera.initialize(objCanvas);
         })
 
-        .controller('pickupDetailsCtrl', function ($scope, $state, $ionicNavBarDelegate, $http, $stateParams, $localstorage, Util) {
-            $ionicNavBarDelegate.showBackButton(false);
 
-            $scope.wastetypes = {};
-            $scope.pickup = {};
-            $scope.additives = {};
-            $scope.timerStartTime = $localstorage.get('timerStartTime');
-            var startTime = new Date($localstorage.get('timerStartTime'));
-            $scope.timerstartFormated = startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds();
-            $scope.showLoading();
-            $http({
-                url: $scope.base + 'pickup-details',
-                method: 'POST',
-                data: {id: $stateParams.pickupid}
-            }).then(function successCallback(response) {
-                $scope.hideLoading();
-                if (response.data.flash == 'success') {
-                    $scope.wastetypes = response.data.Wastetype;
-                    $scope.additives = response.data.Additive;
-                    $scope.pickup = response.data.Pickup;
-                } else {
-                    $scope.alert('Error Occured!', 'Error Occured! Please try again!');
-                }
-            }, function errorCallback(response) {
-                $scope.hideLoading();
-                $scope.ajaxErrorMessage();
-            });
-
-            $scope.savePickup = function (formdata) {
-                if (formdata.Pickup.additive && formdata.Pickup.wastetype) {
-                    $scope.showLoading();
-                    var startTime = new Date($localstorage.get('timerStartTime')).getTime();
-                    var timeNow = new Date().getTime();
-                    var timeTaken = Util.getTimeFormat(Math.floor(timeNow - startTime));
-                    formdata.Pickup.time_taken = timeTaken;
-                    formdata.Pickup.operator_id = $localstorage.uid();
-                    $http({
-                        url: $scope.base + 'save-service-details',
-                        method: 'POST',
-                        data: {service: formdata.Pickup, pickup: $scope.pickup}
-                    }).then(function successCallback(response) {
-                        $scope.hideLoading();
-                        if (response.data.flash == 'success') {
-                            $localstorage.delete('timerStartTime');
-                            $localstorage.delete('startKilometer');
-                            $scope.alert('Success!', 'Data saved successfully!');
-                            $state.go('markAttendance2.scheduleForTheDay');
-                        } else {
-                            $scope.alert('Error Occured!', 'Error Occured! Please try again!');
-                        }
-                    }, function errorCallback(response) {
-                        $scope.hideLoading();
-                        $scope.ajaxErrorMessage();
-                    });
-                } else {
-                    $scope.alert('Error! Fields Required!', 'Minimum 1 Wastetype Qty. and 1 Additive Qty. is required.!');
-                }
-            };
-
-        })
 
         .controller('routeCtrl', function ($scope, $http, $state, $stateParams, $localstorage) {
 
@@ -448,7 +511,6 @@ angular.module('app.controllers', [])
 
                         i = 0;
                         deltaLat = (result[0] - startCoord[0]) / numDeltas;
-//                        console.log(position);
                         deltaLng = (result[1] - startCoord[1]) / numDeltas;
                         moveMarker();
                     }
@@ -465,7 +527,6 @@ angular.module('app.controllers', [])
                         }
                     }
                     navigator.geolocation.getCurrentPosition(function (position) {
-                        console.log(position);
                         var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         startCoord = [position.coords.latitude, position.coords.longitude];
                         var destination = new google.maps.LatLng($stateParams.latitude, $stateParams.longitude);

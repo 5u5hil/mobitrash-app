@@ -44,9 +44,9 @@ angular.module('app.services', [])
                         $window.localStorage[key] = JSON.stringify(value);
                     },
                     getObject: function (key, nulled) {
-                        nulled = nulled || '{}';
+                        nulled = '[]';
                         try {
-                            return JSON.parse($window.localStorage[key] || nulled);
+                            return JSON.parse($window.localStorage[key] || '[]');
                         } catch (e) {
                         }
                     },
