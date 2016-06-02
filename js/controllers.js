@@ -55,7 +55,7 @@ angular.module('app.controllers', [])
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
             $scope.user = {};
-            $("#login-box").css('margin-top', ($(document).height()/2 - 110)+'px');
+            
             console.log($(document).height());
             if ($localstorage.uid()) {
                 $scope.user = $localstorage.getObject('user');

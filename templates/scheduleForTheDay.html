@@ -14,10 +14,10 @@
             <div style="padding: 12px; border: 1px solid #E4E4E4; background: #fff;" ng-if="getstartkilometer">Start Kilometers:  {{getstartkilometer}}</div>
         </div>
         <div class="list card {{$index < 1 && getstartkilometer ? 'active-pickup' : ''}}" ng-repeat="pickup in schedules.pickups">
-            <div class="item item-divider">{{pickup.subscription.name}} </div>
+            <div class="item item-divider"><b>{{pickup.subscription.name}} </b></div>
             <div class="item item-body">                
                 <div class="pickup-details">
-                    <div class="p-title">On field Person Name and Number: </div><div>{{pickup.subscription.onfield_person_name}}&nbsp;&nbsp;- {{pickup.subscription.onfield_person_contact_number}}</span></div>                        
+                    <div>{{pickup.subscription.onfield_person_name}}&nbsp;&nbsp;- {{pickup.subscription.onfield_person_contact_number}}</div>                        
                 </div>
             </div>
             <div class="button-bar" ng-if="$index < 1 && getstartkilometer">
