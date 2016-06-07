@@ -1,16 +1,17 @@
-<style>
-    a{
+<style>    
+    a{ /*Important to disable tabs for this screen*/
         pointer-events: none;
     }
 </style>
 <ion-view hide-tabs title="Pickup Details" id="page9">
     <div class="pickup-timer">
-            <div>Started Timer on: {{timerstartFormated}}</div>
-            <div class="timer" style="font-size: 22px;line-height: 35px;">
-                <span countdown='' date='{{timerStartTime}}'>&nbsp;</span>          
-            </div>
+        <div>Started Timer on: {{timerstartFormated}}</div>
+        <div class="timer" style="font-size: 22px;line-height: 35px;">
+            <span countdown='' date='{{timerStartTime}}'>&nbsp;</span>          
         </div>
-    <ion-content  padding="true" class="has-header" style="margin-top: 70px;" >        
+        <div class="pickup-details-title">{{pickup.subscription.name}}</div>
+    </div>
+    <ion-content  padding="true" class="has-header" style="margin-top: 95px;" >        
         <form name="PickupForm" class="list" ng-submit="savePickup(PickupForm)">
             <label ng-repeat="wastetype in wastetypes" class="item item-input">
                 <span class="input-label">{{wastetype.name}}</span>

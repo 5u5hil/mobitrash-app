@@ -15,7 +15,7 @@
     /*border-bottom: 1px solid #EAEAEA;*/
     padding: 5px 0px;
 }
-.pickup-details div:first-child{
+.pickup-details div{
     color: #868686;
     font-size: 11px;
 }
@@ -51,9 +51,10 @@ ion-content{
 }
 
 .active-pickup{
-    /*box-shadow: 0px 0px 4px #000!important;*/
-
     border:2px solid #87C540 !important;
+}
+.active-pickup .item-divider{
+    background: #87C540;
 }
 .logo{
     background: url(../icon.png) center center no-repeat;
@@ -73,4 +74,11 @@ ion-content{
     right: 5px;
     z-index: 99999;
     position: absolute
+}
+
+.pickup-details-title{
+    padding: 6px;
+    background: #87C540;
+    font-weight: bold;
+    font-size: 15px;
 }

@@ -10,6 +10,7 @@ angular.module('app', ['ionic', 'app.controllers', 'ngCordova', 'app.routes', 'a
         .config(function ($ionicConfigProvider) {
             $ionicConfigProvider.tabs.position('bottom');
             $ionicConfigProvider.views.maxCache(0);
+            $ionicConfigProvider.backButton.text('');
         })
 
         .run(function ($ionicPlatform) {
