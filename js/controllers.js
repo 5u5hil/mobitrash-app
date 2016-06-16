@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-        .controller('AppCtrl', function ($scope, $state, $localstorage, $ionicPopup, $ionicLoading, $http, $cordovaNetwork) {
+        .controller('AppCtrl', function ($scope, $state, $localstorage, $ionicPopup, $ionicLoading, $http, $cordovaNetwork, $cordovaGeolocation) {
             $scope.base = 'http://mobitrash.in/operator/';
 
             $scope.isLogin = function () {
@@ -49,6 +49,7 @@ angular.module('app.controllers', [])
                 $localstorage.delete('user');
                 $localstorage.delete('tempuser');
                 $localstorage.delete('timerStartTime');
+                $localstorage.delete('currentScheduleId');
             }
 
             $scope.showUpload = function () {
@@ -84,6 +85,43 @@ angular.module('app.controllers', [])
                     $scope.alert('You are Offline', 'You are offline! Please try again!');
                 }
             }
+
+            $scope.updateJournyLocation = function (lat, lng) {
+                var schedule_id = $localstorage.get('currentScheduleId');
+                if (schedule_id && lat && lng) {
+                    $http({
+                        url: $scope.base + 'update-location',
+                        method: 'POST',
+                        data: {id: schedule_id, lat: lat, lng: lng}
+                    }).then(function successCallback(response) {
+                    }, function errorCallback(response) {
+                    });
+                }
+            }
+
+            $scope.startWatch = function () {
+                $scope.watch = $cordovaGeolocation.watchPosition({
+                    timeout: 3000,
+                    maxAge: 5000,
+                    enableHighAccuracy: true
+                });
+                $scope.watch.then(
+                        null,
+                        function (err) {
+                            console.log('Location Failed');
+                        },
+                        function (position) {
+                            console.log('--Lat: ' + position.coords.latitude + ' --Lng: ' + position.coords.longitude);
+                            if (position.coords.latitude && position.coords.longitude && position.coords.accuracy <= 25) {
+                                $scope.updateJournyLocation(position.coords.latitude, position.coords.longitude);
+                            }
+                        });
+            };
+            $scope.stopWatch = function () {
+                $cordovaGeolocation.clearWatch($scope.watch);
+            }
+            
+            $scope.startWatch();
 
         })
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
@@ -250,6 +288,13 @@ angular.module('app.controllers', [])
             }
             $scope.submitStartKilometer = function (formdata) {
                 formdata.kilometer.schedule_id = $scope.schedules.id;
+
+                if (formdata.kilometer.start) {
+                    $localstorage.set('currentScheduleId', $scope.schedules.id);
+                }
+                if (formdata.kilometer.end) {
+                    $localstorage.delete('currentScheduleId');
+                }
                 if ($cordovaNetwork.isOffline()) {  //Offline
                     var uploadKM = $localstorage.getObject('uploadKM');
                     uploadKM.push(formdata.kilometer);
