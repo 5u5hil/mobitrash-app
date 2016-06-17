@@ -100,27 +100,42 @@ angular.module('app.controllers', [])
             }
 
             $scope.startWatch = function () {
-                $scope.watch = $cordovaGeolocation.watchPosition({
+                var posOptions = {
                     timeout: 3000,
                     maxAge: 5000,
                     enableHighAccuracy: true
-                });
-                $scope.watch.then(
-                        null,
-                        function (err) {
-                            console.log('Location Failed');
-                        },
-                        function (position) {
-                            console.log('--Lat: ' + position.coords.latitude + ' --Lng: ' + position.coords.longitude);
-                            if (position.coords.latitude && position.coords.longitude && position.coords.accuracy <= 25) {
-                                $scope.updateJournyLocation(position.coords.latitude, position.coords.longitude);
-                            }
-                        });
+                }
+                var locationInterval = setInterval(function () {
+                    $cordovaGeolocation.getCurrentPosition(posOptions)
+                            .then(function (position) {
+                                if (position.coords.latitude && position.coords.longitude && position.coords.accuracy <= 20) {
+                                    $scope.updateJournyLocation(position.coords.latitude, position.coords.longitude);
+                                }
+                            }, function (err) {
+                                console.log('Location Failed');
+                            });
+                }, 10000);
+//                $scope.watch = $cordovaGeolocation.watchPosition({
+//                    timeout: 3000,
+//                    maxAge: 5000,
+//                    enableHighAccuracy: true
+//                });
+//                $scope.watch.then(
+//                        null,
+//                        function (err) {
+//                            console.log('Location Failed');
+//                        },
+//                        function (position) {
+//                            console.log('--Lat: ' + position.coords.latitude + ' --Lng: ' + position.coords.longitude);
+//                            if (position.coords.latitude && position.coords.longitude && position.coords.accuracy <= 25) {
+//                                $scope.updateJournyLocation(position.coords.latitude, position.coords.longitude);
+//                            }
+//                        });
             };
-            $scope.stopWatch = function () {
-                $cordovaGeolocation.clearWatch($scope.watch);
-            }
-            
+//            $scope.stopWatch = function () {
+//                $cordovaGeolocation.clearWatch($scope.watch);
+//            }
+
             $scope.startWatch();
 
         })
