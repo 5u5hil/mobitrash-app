@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
 
         .controller('AppCtrl', function ($scope, $state, $localstorage, $ionicPopup, $ionicLoading, $http, $cordovaNetwork, $cordovaGeolocation) {
             $scope.base = 'http://mobitrash.in/operator/';
-
+            $scope.appVersion = '1.0.1';
             $scope.isLogin = function () {
                 /// Check user login status
                 if ($localstorage.uid()) {
@@ -101,8 +101,8 @@ angular.module('app.controllers', [])
 
             $scope.startWatch = function () {
                 var posOptions = {
-                    timeout: 3000,
-                    maxAge: 5000,
+                    timeout: 13000,
+                    maxAge: 10000,
                     enableHighAccuracy: true
                 }
                 var locationInterval = setInterval(function () {
@@ -114,7 +114,7 @@ angular.module('app.controllers', [])
                             }, function (err) {
                                 console.log('Location Failed');
                             });
-                }, 10000);
+                }, 15000);
 //                $scope.watch = $cordovaGeolocation.watchPosition({
 //                    timeout: 3000,
 //                    maxAge: 5000,
@@ -172,6 +172,9 @@ angular.module('app.controllers', [])
                         if (response.data.flash == 'success') {
                             if (response.data.Attendance > 0) {
                                 $localstorage.setObject('user', response.data.User);
+                                if(response.data.Schedule && response.data.Schedule.start_kilometer && !response.data.Schedule.end_kilometer){
+                                    $localstorage.set('currentScheduleId', response.data.Schedule.id);
+                                }
                             } else {
                                 $localstorage.setObject('tempuser', response.data.User);
                             }
@@ -215,7 +218,7 @@ angular.module('app.controllers', [])
                 $http({
                     url: $scope.base + 'attendance',
                     method: 'POST',
-                    data: {id: $localstorage.getObject('tempuser').id, image_data: $scope.imageData}
+                    data: {id: $localstorage.getObject('tempuser').id, image_data: $scope.imageData, app_version: $scope.appVersion}
                 }).then(function successCallback(response) {
                     $scope.hideLoading();
                     if (response.data.flash == 'success') {
@@ -625,8 +628,8 @@ angular.module('app.controllers', [])
                 }, function (err) {
                 }, {
                     enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 5000
+                    timeout: 10000,
+                    maximumAge: 10000
                 });
                 setInterval(function () {
                     navigator.geolocation.getCurrentPosition(function (position) {
@@ -639,7 +642,7 @@ angular.module('app.controllers', [])
                         }
                     });
 
-                }, 3000);
+                }, 5000);
             }
         })
  
