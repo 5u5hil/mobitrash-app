@@ -1,6 +1,6 @@
 <ion-view title="Cleaning" id="page4">
     <ion-content padding="true" class="has-header">
-        <form class="list" ng-if="isLogin()">
+        <form class="list" ng-if="isLogin() && !loginmessage">
             <label class="item item-select">
                 <span class="input-label">Van</span>
                 <select name="singleSelect" ng-model="cleaning.van_id">

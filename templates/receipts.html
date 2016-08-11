@@ -1,6 +1,6 @@
 <ion-view title="Receipts" id="page6">
     <ion-content padding="true" class="has-header">
-        <form ng-if="isLogin()" class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
+        <form ng-if="isLogin() && !loginmessage" class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
             
             <label class="item item-select">
                 <span class="input-label">Asset</span>

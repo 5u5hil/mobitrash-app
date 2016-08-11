@@ -34,6 +34,26 @@ angular.module('app.routes', [])
                             }
                         }
                     })
+                    
+                    .state('markAttendance2.settings', {
+                        url: '/settings',
+                        views: {
+                            'tab2': {
+                                templateUrl: 'templates/settings.html',
+                                controller: 'settingsCtrl'
+                            }
+                        }
+                    })
+                    
+                    .state('markAttendance2.pickups', {
+                        url: '/pickups/:id',
+                        views: {
+                            'tab2': {
+                                templateUrl: 'templates/pickups.html',
+                                controller: 'pickupsCtrl'
+                            }
+                        }
+                    })
 
                     .state('markAttendance2.cleaning', {
                         url: '/cleaning',
@@ -68,7 +88,7 @@ angular.module('app.routes', [])
                     })
 
                     .state('markAttendance2.pickupDetails', {
-                        url: '/details/:pickupid',
+                        url: '/details/:scheduleid/:pickupid',
                         views: {
                             'tab2': {
                                 templateUrl: 'templates/pickupDetails.html',
@@ -86,6 +106,16 @@ angular.module('app.routes', [])
                             }
                         }
                     })
+                    
+                    .state('markAttendance2.logout', {
+                        url: '/logout',
+                        views: {
+                            'tab2': {
+                                templateUrl: 'templates/logout.html',
+                                controller: 'logoutCtrl'
+                            }
+                        }
+                    });
 
             $urlRouterProvider.otherwise('/attendance/attendance')
 

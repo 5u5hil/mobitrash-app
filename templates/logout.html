@@ -1,0 +1,11 @@
+<ion-view title="Logout" id="page4">
+    <ion-content padding="true" class="has-header">
+        <div>
+            <div class="card logout-box" ng-repeat="usr in users">
+                <button ng-click="logout(usr.id)" class="button button-small button-assertive logout-button">Logout</button>
+                <div style="height: 31px;line-height: 31px;padding-right: 55px;">{{usr.name}}</div>
+                
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

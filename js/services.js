@@ -52,8 +52,10 @@ angular.module('app.services', [])
                     },
                     uid: function () {
                         try {
-                            var user = this.getObject('user');
-                            return user.id;
+                            var users = this.getObject('users');
+                            if(users.length > 0){
+                                return users[0].id;
+                            }
                         } catch (e) {
                         }
                     },

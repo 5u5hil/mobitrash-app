@@ -1,3 +1,7 @@
+a{
+    text-decoration: none;
+}
+
 .stopWatch {   
     text-align: center;
     margin: 10px auto;
@@ -65,7 +69,7 @@ ion-content{
 }
 
 #login-box{
-    margin-top: 100px;
+    margin-top: 20px;
 }
 
 .right-button{
@@ -81,4 +85,53 @@ ion-content{
     background: #87C540;
     font-weight: bold;
     font-size: 15px;
+}
+.login-box-title{
+    padding: 10px;
+    background: #87c540;
+    color: #fff;
+    font-size: 16px;
+}
+
+.right-menu{
+    color: #fff;
+    font-size: 30px;
+    width: 20px;
+}
+.right-menu-box{
+    width: 150px;
+    background: #fff;
+    position: absolute;
+    z-index: 999999;
+    right: 0;
+    top: 44px;
+}
+.right-menu-box a{
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border-bottom: 1px solid #ececec;
+    font-size: 17px;
+    color: #000;
+    text-decoration: none;
+}
+.menu-inactive{
+    display: none;
+}
+.menu-active{
+    display: block;
+}
+.login-status{
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+}
+
+.logout-box{
+    padding: 10px;
+    
+}
+.logout-button{
+    position: absolute;
+    right: 20px;
 }

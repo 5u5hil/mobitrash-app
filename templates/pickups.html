@@ -1,0 +1,45 @@
+<ion-view title="Pickups For {{schedule.name}}" id="page3">
+    <ion-content padding="true" class="has-header">
+        
+        <div style="width: 100%;height: 40px;" ng-click="uploadOfflineData()" ng-show="showUpload()"><div class="right-button"><i class="ion ion-android-upload"></i></div></div>
+        <div>
+            <div ng-if="!getstartkilometer && isLogin() && showstartkm" >
+                <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">
+                    <button type="submit" class="button" style="position: absolute;right: 9px;z-index: 99;margin: 1px;min-width: 35px;"><i class="ion ion-checkmark-round"></i></button>
+                    <label class="item item-input">                    
+                        <span class="input-label">Enter Start Kilometers</span>
+                        <input ng-model="FormKM.kilometer.start" required type="number" style="padding-right: 91px;" placeholder="KMS" />
+
+                    </label> 
+                </form>
+            </div>
+            <div style="padding: 12px; border: 1px solid #E4E4E4; background: #fff;" ng-if="getstartkilometer">Start Kilometers:  {{getstartkilometer}}</div>
+        </div>
+        <div class="list card {{$index < 1 && getstartkilometer ? 'active-pickup' : ''}}" ng-repeat="pickup in schedule.pickups">
+            <div class="item item-divider"><b>{{pickup.subscription.name}} </b></div>
+            <div class="item item-body" style="padding: 0px 15px;">                
+                <div class="pickup-details">
+                    <div>{{pickup.subscription.onfield_person_name}}&nbsp;&nbsp;- {{pickup.subscription.onfield_person_contact_number}}</div>                        
+                    <div style="font-weight:bold;color:#87C540;font-size: 12px;">{{pickup.pickuptime}}</div>                        
+                </div>
+            </div>
+            <div class="button-bar" ng-if="$index < 1 && getstartkilometer">
+                <a ui-sref="markAttendance2.route({latitude:pickup.subscription.address.latitude,longitude:pickup.subscription.address.longitude})" id="scheduleForTheDay-button8" style="font-weight:300;border-radius:0px 0px 0px 0px; background: #777777; border: 1px solid #464646;border-right: none; color: #fff;" class="button button-balanced button-small button-block button-outline"> View Route</a>
+                <a ng-click="startTimer('SH'+schedule.id,'ID'+pickup.id)" id="scheduleForTheDay-button9" style="font-weight:300;border-radius:0px 0px 0px 0px; background: #777777; border: 1px solid #464646;color: #fff;" class="button button-assertive button-small button-block button-outline"> Start Timer</a>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 20px 0px; ">{{pickupmessage}}</div>
+        <div ng-if="!getendtkilometer && showendkm">
+            <form name="FormKM" ng-submit="submitStartKilometer(FormKM)">
+                <button type="submit" class="button" style="position: absolute;right: 9px;z-index: 99;margin: 1px;min-width: 35px;"><i class="ion ion-checkmark-round"></i></button>
+                <label class="item item-input">                    
+                    <span class="input-label">Enter End Kilometers</span>
+                    <input ng-model="FormKM.kilometer.end" required type="number" style="padding-right: 91px;" placeholder="KMS" />
+                </label> 
+            </form>
+        </div>
+        <div style="padding: 12px; border: 1px solid #E4E4E4; background: #fff;" ng-if="getendtkilometer && showendkm">End Kilometers:  {{getendtkilometer}}</div>
+
+
+    </ion-content>
+</ion-view>

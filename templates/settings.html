@@ -1,0 +1,19 @@
+<ion-view title="Settings" id="page6">
+    <ion-content padding="true" class="has-header">
+        <form class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveSetting(SettingsForm)">
+            
+            <label class="item item-select">
+                <span class="input-label">Asset</span>
+                <select ng-model="SettingsForm.Settings.van_id">
+                    <option ng-repeat="asset in vandata.Assets" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
+                </select>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Van Password</span>
+                <input type="password" ng-model="SettingsForm.Settings.password" />
+            </label>            
+            <button type="submit" id="receipts-button17" style="font-weight:300;border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-android-checkbox-outline"> Submit</button>
+        </form>
+        <div style="text-align: center; padding: 20px 0px; ">{{loginmessage}}</div>
+    </ion-content>
+</ion-view>
