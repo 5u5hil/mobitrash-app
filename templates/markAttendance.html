@@ -1,6 +1,6 @@
 <ion-view title="Mark Attendance" id="page2">
     <ion-content padding="true" class="has-header">
-        <div id="staff1">
+        <div id="staff1" ng-show="!vanMessage">
             <div id="login-box" ng-show="!isTempLogin()">
                 <form  name="LoginForm" class="list" ng-submit="login(LoginForm)">
                     <label class="item item-input" name="empid">
@@ -24,7 +24,7 @@
                 </label>
                 <div><button ng-show="!imageData" ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Proceed</button></div>
                 <div ng-show="imageData" class="attendance" >
-                    <div style="text-align: center;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
+                    <div style="text-align: center;margin-top: 10px;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
                     <button ng-click="markAttendance(Shift)" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round">Confirm</button>
                     <button ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Click Again</button>
                     <div class="logout" ng-show="isTempLogin()"><button ng-click="relogin()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-arrow-left-c"> ReLogin</button></div>
@@ -34,5 +34,6 @@
                 <div ng-repeat="usr in users"><span>{{usr.name}}</span><span style="color: #87C540;">&nbsp;&nbsp;Logged in successfully!</span></div>
             </div>
         </div>
+        <div ng-show="vanMessage"  style="text-align: center; padding: 20px 0px; ">{{vanMessage}}</div>
     </ion-content>
 </ion-view>

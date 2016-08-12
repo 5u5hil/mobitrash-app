@@ -3,9 +3,9 @@
         <form class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveSetting(SettingsForm)">
             
             <label class="item item-select">
-                <span class="input-label">Asset</span>
+                <span class="input-label">Select Van</span>
                 <select ng-model="SettingsForm.Settings.van_id">
-                    <option ng-repeat="asset in vandata.Assets" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
+                    <option ng-repeat="asset in vandata.Assets" ng-selected="{{asset.id==vanID?true:false}}" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
                 </select>
             </label>
             <label class="item item-input">

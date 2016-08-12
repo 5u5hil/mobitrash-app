@@ -38,9 +38,19 @@ angular.module('app.routes', [])
                     .state('markAttendance2.settings', {
                         url: '/settings',
                         views: {
-                            'tab2': {
+                            'tab1': {
                                 templateUrl: 'templates/settings.html',
                                 controller: 'settingsCtrl'
+                            }
+                        }
+                    })                    
+                    
+                    .state('markAttendance2.logout', {
+                        url: '/logout',
+                        views: {
+                            'tab1': {
+                                templateUrl: 'templates/logout.html',
+                                controller: 'logoutCtrl'
                             }
                         }
                     })
@@ -80,7 +90,7 @@ angular.module('app.routes', [])
                     .state('markAttendance2.getClicked', {
                         url: '/click',
                         views: {
-                            'tab1': {
+                            'tab10': {
                                 templateUrl: 'templates/getClicked.html',
                                 controller: 'getClickedCtrl'
                             }
@@ -103,16 +113,6 @@ angular.module('app.routes', [])
                             'tab2': {
                                 templateUrl: 'templates/route.html',
                                 controller: 'routeCtrl'
-                            }
-                        }
-                    })
-                    
-                    .state('markAttendance2.logout', {
-                        url: '/logout',
-                        views: {
-                            'tab2': {
-                                templateUrl: 'templates/logout.html',
-                                controller: 'logoutCtrl'
                             }
                         }
                     });

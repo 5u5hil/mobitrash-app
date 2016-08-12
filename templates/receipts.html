@@ -2,12 +2,12 @@
     <ion-content padding="true" class="has-header">
         <form ng-if="isLogin() && !loginmessage" class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">
             
-            <label class="item item-select">
+<!--            <label class="item item-select">
                 <span class="input-label">Asset</span>
                 <select ng-model="ReceiptForm.Record.asset_id">
                     <option ng-repeat="asset in receiptdata.Assets" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
                 </select>
-            </label>
+            </label>-->
             <label class="item item-select">
                 <span class="input-label">Receipt Type</span>
                 <select ng-model="ReceiptForm.Record.recordtype_id" ng-init="ReceiptForm.Record.recordtype_id=1">

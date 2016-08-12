@@ -1,13 +1,12 @@
 <ion-view title="Cleaning" id="page4">
     <ion-content padding="true" class="has-header">
         <form class="list" ng-if="isLogin() && !loginmessage">
-            <label class="item item-select">
+<!--            <label class="item item-select">
                 <span class="input-label">Van</span>
-                <select name="singleSelect" ng-model="cleaning.van_id">
-                    
+                <select name="singleSelect" ng-model="cleaning.van_id">                    
                     <option value="{{van.id}}" ng-repeat="van in vans">{{van.name}}</option>
                 </select>
-            </label>
+            </label>-->
             <ion-checkbox ng-model="cleaning.record" ng-disabled="cleaningDisabled">Cleaning Done for Today?</ion-checkbox>
             <button ng-click="saveCleaning(cleaning)" ng-disabled="cleaningDisabled" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round">Submit</button>
         </form>

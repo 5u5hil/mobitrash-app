@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
 
         .controller('AppCtrl', function ($scope, $state, $localstorage, $ionicPopup, $ionicLoading, $http, $cordovaNetwork, $cordovaGeolocation) {
             $scope.base = 'http://mobitrash.in/operator/';
-            $scope.base = 'http://192.168.2.127/Mobitrash/web/operator/';
+            $scope.base = 'http://192.168.2.145/Mobitrash/web/operator/';
             $scope.appVersion = '1.0.3';
             $scope.isLogin = function () {
                 var users = $localstorage.getObject('users');
@@ -99,12 +99,12 @@ angular.module('app.controllers', [])
             }
 
             $scope.updateJournyLocation = function (lat, lng) {
-                var schedule_id = $localstorage.get('currentScheduleId');
-                if (schedule_id && lat && lng) {
+                var van_id = $localstorage.get('vanId');
+                if (van_id && lat && lng) {
                     $http({
                         url: $scope.base + 'update-location',
                         method: 'POST',
-                        data: {id: schedule_id, lat: lat, lng: lng}
+                        data: {id: van_id, lat: lat, lng: lng}
                     }).then(function successCallback(response) {
                     }, function errorCallback(response) {
                     });
@@ -126,7 +126,7 @@ angular.module('app.controllers', [])
                             }, function (err) {
                                 console.log('Location Failed');
                             });
-                }, 15000);
+                }, 13000);
             };
 
             $scope.startWatch();
@@ -146,6 +146,8 @@ angular.module('app.controllers', [])
         .controller('settingsCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.vandata = {};
             $scope.SettingsForm = {};
+            $scope.SettingsForm.Settings = {};
+            $scope.vanID = $localstorage.get('vanId');
             $http({
                 url: $scope.base + 'van-data',
                 method: 'POST',
@@ -212,13 +214,12 @@ angular.module('app.controllers', [])
                     $scope.hideLoading();
                     $scope.ajaxErrorMessage();
                 });
-
-//                $localstorage.delete('currentScheduleId');
             }
         })
 
         .controller('markAttendanceCtrl', function ($scope, $state, $localstorage, $http, $cordovaCamera) {
             $scope.imageData = "";
+            $scope.vanMessage = "";
             $scope.user = {};
             $scope.shifts = {};
             $scope.Shift;
@@ -226,6 +227,9 @@ angular.module('app.controllers', [])
             $scope.user = $localstorage.getObject('tempuser');
             if ($localstorage.get('attendanceDate') != $scope.getDate()) {
                 $localstorage.delete('users');
+            }
+            if (!$localstorage.get('vanId')) {
+                $scope.vanMessage = "Van Not Selected! Please select Van from Setting";
             }
             $scope.showLoading();
             $http({
@@ -244,7 +248,7 @@ angular.module('app.controllers', [])
                 $scope.hideLoading();
                 $scope.ajaxErrorMessage();
             });
-            
+
             $scope.login = function (formdata) {
                 if (formdata.user.id) {
                     $scope.showLoading();
@@ -292,32 +296,32 @@ angular.module('app.controllers', [])
             }
 
             $scope.markAttendance = function (Shift) {
-                if(Shift){                    
-                $scope.showLoading();
-                $http({
-                    url: $scope.base + 'attendance',
-                    method: 'POST',
-                    data: {id: $localstorage.getObject('tempuser').id, van_id:$localstorage.get('vanId'), shift_id:Shift, image_data: $scope.imageData, app_version: $scope.appVersion}
-                }).then(function successCallback(response) {
-                    $scope.hideLoading();
-                    if (response.data.flash == 'success') {
-                        $localstorage.set('attendanceDate', $scope.getDate());
-                        $localstorage.delete('tempuser');
-                        var allusers = $localstorage.getObject('users');
-                        allusers.push(response.data.User);
-                        $localstorage.setObject('users', allusers);
-                        $scope.alert('Success', 'Attendance Marked Successfully!');
-                        $state.go($state.current, {}, {reload: true});
-                    } else {
-                        $scope.alert('Login Error', 'Invalid Request');
-                    }
-                }, function errorCallback(response) {
-                    $scope.hideLoading();
-                    $scope.ajaxErrorMessage();
-                });
-            }else{
-                $scope.alert('Shift Error!', 'Please Select Shift!');
-            }
+                if (Shift) {
+                    $scope.showLoading();
+                    $http({
+                        url: $scope.base + 'attendance',
+                        method: 'POST',
+                        data: {id: $localstorage.getObject('tempuser').id, van_id: $localstorage.get('vanId'), shift_id: Shift, image_data: $scope.imageData, app_version: $scope.appVersion}
+                    }).then(function successCallback(response) {
+                        $scope.hideLoading();
+                        if (response.data.flash == 'success') {
+                            $localstorage.set('attendanceDate', $scope.getDate());
+                            $localstorage.delete('tempuser');
+                            var allusers = $localstorage.getObject('users');
+                            allusers.push(response.data.User);
+                            $localstorage.setObject('users', allusers);
+                            $scope.alert('Success', 'Attendance Marked Successfully!');
+                            $state.go($state.current, {}, {reload: true});
+                        } else {
+                            $scope.alert('Login Error', 'Invalid Request');
+                        }
+                    }, function errorCallback(response) {
+                        $scope.hideLoading();
+                        $scope.ajaxErrorMessage();
+                    });
+                } else {
+                    $scope.alert('Shift Error!', 'Please Select Shift!');
+                }
             }
         })
 
@@ -372,7 +376,7 @@ angular.module('app.controllers', [])
                 var today = new Date();
                 var startTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
                 $localstorage.set('timerStartTime', startTime);
-                $state.go('markAttendance2.pickupDetails', {scheduleid: scheduleid, pickupid: pickupid})
+                $state.go('markAttendance2.pickupDetails', {scheduleid: scheduleid, pickupid: pickupid});
             }
             if (!$localstorage.get('vanId')) {
                 $scope.pickupmessage = "Van Not Selected! Please select Van from Setting";
@@ -442,12 +446,6 @@ angular.module('app.controllers', [])
             $scope.submitStartKilometer = function (formdata) {
                 formdata.kilometer.schedule_id = $scope.schedule.id;
 
-                if (formdata.kilometer.start) {
-                    $localstorage.set('currentScheduleId', $scope.schedule.id);
-                }
-                if (formdata.kilometer.end) {
-                    $localstorage.delete('currentScheduleId');
-                }
                 if ($cordovaNetwork.isOffline()) {  //Offline
                     var uploadKM = $localstorage.getObject('uploadKM');
                     uploadKM.push(formdata.kilometer);
@@ -551,6 +549,7 @@ angular.module('app.controllers', [])
         .controller('cleaningCtrl', function ($scope, $state, $localstorage, $http) {
             $scope.cleaningDisabled = false;
             $scope.cleaning = {};
+            $scope.cleaning.van_id = $localstorage.get('vanId');
             $scope.cleaning.record = false;
             $scope.vans = {};
             $scope.showLoading();
@@ -615,6 +614,7 @@ angular.module('app.controllers', [])
             $scope.showLoading();
             $scope.ReceiptForm = {};
             $scope.ReceiptForm.Record = {};
+            $scope.ReceiptForm.Record.asset_id = $localstorage.get('vanId');
             $scope.ReceiptForm.Record.recordtype_id = 1;
             if (!$localstorage.get('vanId')) {
                 $scope.loginmessage = "Van Not Selected! Please select Van from Setting";
