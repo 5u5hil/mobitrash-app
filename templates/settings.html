@@ -1,11 +1,15 @@
 <ion-view title="Settings" id="page6">
-    <ion-content padding="true" class="has-header">
+    <div class="right-menu-box menu-inactive">
+        <a href="#/attendance/settings"><i class="ion ion-wrench"></i> Setting</a>
+        <a href="#/attendance/logout"><i class="ion ion-log-out"></i> Logout</a>
+    </div>
+    <ion-content padding="true" class="has-header">        
         <form class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveSetting(SettingsForm)">
-            
+
             <label class="item item-select">
                 <span class="input-label">Select Van</span>
                 <select ng-model="SettingsForm.Settings.van_id">
-                    <option ng-repeat="asset in vandata.Assets" ng-selected="{{asset.id==vanID?true:false}}" value="{{asset.id}}">{{asset.name+' - '+asset.asset_no}}</option>
+                    <option ng-repeat="asset in vandata.Assets" ng-selected="{{asset.id==vanID?true:false}}" value="{{asset.id}}">{{asset.name + ' - ' + asset.asset_no}}</option>
                 </select>
             </label>
             <label class="item item-input">

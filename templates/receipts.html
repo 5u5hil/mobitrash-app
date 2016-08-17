@@ -1,3 +1,8 @@
+<style>
+    .right-button-toggle{
+        display: none;
+    }
+</style>
 <ion-view title="Receipts" id="page6">
     <ion-content padding="true" class="has-header">
         <form ng-if="isLogin() && !loginmessage" class="list" name="Receipt" enctype="multipart/form-data" ng-submit="saveReceipt(ReceiptForm)">

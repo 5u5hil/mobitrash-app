@@ -1,5 +1,10 @@
 <ion-view title="Mark Attendance" id="page2">
+    <div class="right-menu-box menu-inactive">
+        <a href="#/attendance/settings"><i class="ion ion-wrench"></i> Setting</a>
+        <a href="#/attendance/logout"><i class="ion ion-log-out"></i> Logout</a>
+    </div>
     <ion-content padding="true" class="has-header">
+
         <div id="staff1" ng-show="!vanMessage">
             <div id="login-box" ng-show="!isTempLogin()">
                 <form  name="LoginForm" class="list" ng-submit="login(LoginForm)">
@@ -17,15 +22,15 @@
             </div>
             <div ng-show="isTempLogin()">
                 <label class="item item-select">
-                    <span class="input-label">Select Shift</span>
-                    <select ng-model="Shift">
-                        <option ng-repeat="shift in shifts" value="{{shift.id}}">{{shift.name}}</option>
+                    <span class="input-label">Select Schedule</span>
+                    <select ng-model="Schedule" multiple style="width: 50%;">
+                        <option ng-repeat="schedule in schedules" value="{{schedule.id}}">{{schedule.name}}</option>
                     </select>
                 </label>
                 <div><button ng-show="!imageData" ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Proceed</button></div>
                 <div ng-show="imageData" class="attendance" >
                     <div style="text-align: center;margin-top: 10px;"><img id="myImage" src="" style="height: 200px; width: 200px;" /></div>
-                    <button ng-click="markAttendance(Shift)" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round">Confirm</button>
+                    <button ng-click="markAttendance(Schedule)" style="border-radius:0px 0px 0px 0px;" class="button button-assertive button-block button-outline icon ion-checkmark-round">Confirm</button>
                     <button ng-click="getCamera()" id="markAttendance-button2" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-camera"> Click Again</button>
                     <div class="logout" ng-show="isTempLogin()"><button ng-click="relogin()" style="border-radius:0px 0px 0px 0px;" class="button button-assertive  button-block button-outline icon ion-arrow-left-c"> ReLogin</button></div>
                 </div>
